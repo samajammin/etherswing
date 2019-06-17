@@ -1,9 +1,12 @@
 {
   "name": "etherswing",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Leverage your ETH with EtherSwing",
-  "main": "index.js",
-  "repository": "https://github.com/sbrichards/etherswing",
+  "main": "truffle-config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbrichards/etherswing"
+  },
   "author": "Sam Richards <sbrichards@gmail.com>",
   "license": "MIT",
   "devDependencies": {
