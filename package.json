@@ -1,0 +1,13 @@
+{
+  "name": "etherswing",
+  "version": "1.0.0",
+  "description": "Leverage your ETH with EtherSwing",
+  "main": "index.js",
+  "repository": "https://github.com/sbrichards/etherswing",
+  "author": "Sam Richards <sbrichards@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "openzeppelin-test-helpers": "^0.4.0"
+  }
+}
