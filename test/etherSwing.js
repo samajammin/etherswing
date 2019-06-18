@@ -6,9 +6,14 @@ contract('EtherSwing', accounts => {
   let etherSwing;
   const owner = accounts[0];
   const other = accounts[1];
+  const constructorAmount = web3.utils.toWei('0.1');
 
   beforeEach(async () => {
-    etherSwing = await EtherSwing.deployed();
+    const uniswapFactoryAddress = '0xB48C962C1883D25ce93a6610A293c9dbaBf33F90';
+    etherSwing = await EtherSwing.new(uniswapFactoryAddress, {
+      from: owner,
+      value: constructorAmount
+    });
   });
 
   describe('initial state', async () => {
