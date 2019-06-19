@@ -6,13 +6,13 @@ contract('EtherSwing', accounts => {
   let etherSwing;
   const owner = accounts[0];
   const other = accounts[1];
-  const constructorAmount = web3.utils.toWei('0.1');
+  // const constructorAmount = web3.utils.toWei('0.1');
 
   beforeEach(async () => {
     const uniswapFactoryAddress = '0xB48C962C1883D25ce93a6610A293c9dbaBf33F90';
-    etherSwing = await EtherSwing.new(uniswapFactoryAddress, {
-      from: owner,
-      value: constructorAmount
+    const daiTokenAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359';
+    etherSwing = await EtherSwing.new(uniswapFactoryAddress, daiTokenAddress, {
+      from: owner
     });
   });
 
@@ -42,8 +42,8 @@ contract('EtherSwing', accounts => {
   });
 
   describe('transfer()', async () => {
-    // TODO reset contract between tests?
     it('should transfer valid funds', async () => {
+      await etherSwing.fund({ from: owner, value: 500 });
       expect(await etherSwing.getBalance()).to.be.bignumber.equal('500');
       await etherSwing.transfer(owner, 300, { from: owner });
       expect(await etherSwing.getBalance()).to.be.bignumber.equal('200');
@@ -57,7 +57,8 @@ contract('EtherSwing', accounts => {
     });
 
     it('should fail for invalid funds', async () => {
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('200');
+      await etherSwing.fund({ from: owner, value: 500 });
+      expect(await etherSwing.getBalance()).to.be.bignumber.equal('500');
       await expectRevert(
         etherSwing.transfer(owner, 800, { from: owner }),
         'Insufficient contract balance.'

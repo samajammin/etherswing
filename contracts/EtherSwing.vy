@@ -71,9 +71,10 @@ uniswap_dai_exchange: UniswapExchangeInterface
 @public
 def __init__(_uniswap_factory_address: address, _dai_token_address: address):
   self.owner = msg.sender
-  self.uniswap_factory = UniswapFactoryInterface(_uniswap_factory_address)
-  dai_exchange_address: address = self.uniswap_factory.getExchange(_dai_token_address)
-  self.uniswap_dai_exchange = UniswapExchangeInterface(dai_exchange_address)
+  # TODO issues with passing in addresses...
+  self.uniswap_factory = UniswapFactoryInterface(msg.sender)
+  # dai_exchange_address: address = self.uniswap_factory.getExchange(_dai_token_address)
+  self.uniswap_dai_exchange = UniswapExchangeInterface(msg.sender)
 
 # Fund the contract's treasury balance
 @public

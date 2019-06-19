@@ -1,4 +1,5 @@
 var EtherSwing = artifacts.require('EtherSwing');
+var DaiToken = artifacts.require('erc20_token');
 
 // Steps for dev:
 // 1. Deploy Factory contract
@@ -7,6 +8,8 @@ var EtherSwing = artifacts.require('EtherSwing');
 // 4. Deploy Exchange contract w/ fake ERC20 contract
 
 module.exports = (deployer, network) => {
+  deployer.deploy(DaiToken, 'Dai', 'DAI', 18, 100000000);
+
   // TODO: "truffle migrate" will break, must deploy Uniswap contracts first
   const uniswapFactoryAddresses = {
     mainnet: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
