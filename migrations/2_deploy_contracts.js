@@ -1,4 +1,4 @@
-var EtherSwing = artifacts.require('EtherSwing');
+var EtherSwing = artifacts.require('ether_swing');
 var DaiToken = artifacts.require('erc20_token');
 
 // Steps for dev:

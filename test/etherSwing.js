@@ -1,4 +1,4 @@
-const EtherSwing = artifacts.require('EtherSwing');
+const EtherSwing = artifacts.require('ether_swing');
 const { expectRevert } = require('openzeppelin-test-helpers');
 const { expect } = require('chai');
 
