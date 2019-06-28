@@ -1,9 +1,7 @@
-const Demo = artifacts.require('vyper_demo');
-// const EtherSwing = artifacts.require('ether_swing');
-// const DaiToken = artifacts.require('erc20_token');
-// // TODO commit Uniswap artifacts to git
-// const UniswapExchange = artifacts.require('uniswap_exchange');
-// const UniswapFactory = artifacts.require('uniswap_factory');
+const EtherSwing = artifacts.require('ether_swing');
+const DaiToken = artifacts.require('erc20_token');
+const UniswapExchange = artifacts.require('uniswap_exchange');
+const UniswapFactory = artifacts.require('uniswap_factory');
 
 // Steps for dev:
 // 1. Deploy DaiToken
@@ -16,27 +14,25 @@ const Demo = artifacts.require('vyper_demo');
 // 4. Deploy Exchange contract w/ fake ERC20 contract
 
 module.exports = (deployer, network) => {
-  // deployer.deploy(DaiToken, 'Dai', 'DAI', 18, 100000000);
-  deployer.deploy(Demo, { value: 1000000000000000000 });
+  deployer.deploy(DaiToken, 'Dai', 'DAI', 18, 100000000);
 
-  // let exchangeTemplate;
-  // let factory;
+  let exchangeTemplateInstance;
+  let factoryInstance;
 
-  // deployer
-  //   .deploy(UniswapExchange)
-  //   .then(instance => (exchangeTemplate = instance))
-  //   .then(() => deployer.deploy(UniswapFactory))
-  //   .then(instance => {
-  //     factory = instance;
-  //     return factory.initializeFactory(exchangeTemplate.address);
-  //   })
-  //   .then(() => factory.createExchange(DaiToken.address))
-  //   .then(() =>
-  //     // deployer.deploy(EtherSwing, UniswapFactory.address, DaiToken.address, {
-  //     deployer.deploy(EtherSwing, {
-  //       value: 1000000000000000000
-  //     })
-  //   );
+  deployer
+    .deploy(UniswapExchange)
+    .then(instance => (exchangeTemplateInstance = instance))
+    .then(() => deployer.deploy(UniswapFactory))
+    .then(instance => {
+      factoryInstance = instance;
+      return factoryInstance.initializeFactory(
+        exchangeTemplateInstance.address
+      );
+    })
+    .then(() => factoryInstance.createExchange(DaiToken.address))
+    .then(() =>
+      deployer.deploy(EtherSwing, UniswapFactory.address, DaiToken.address)
+    );
 
   // TODO: "truffle migrate" will break, must deploy Uniswap contracts first
   // const uniswapFactoryAddresses = {

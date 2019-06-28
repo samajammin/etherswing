@@ -1,28 +1,46 @@
 const EtherSwing = artifacts.require('ether_swing');
+const DaiToken = artifacts.require('erc20_token');
+const UniswapExchange = artifacts.require('uniswap_exchange');
+const UniswapFactory = artifacts.require('uniswap_factory');
+
 const { expectRevert } = require('openzeppelin-test-helpers');
 const { expect } = require('chai');
 
 contract('EtherSwing', accounts => {
+  let daiToken;
+  let uniswapExchange;
+  let uniswapFactory;
   let etherSwing;
+
   const owner = accounts[0];
   const other = accounts[1];
-  // const constructorAmount = web3.utils.toWei('0.1');
 
   beforeEach(async () => {
-    const uniswapFactoryAddress = '0xB48C962C1883D25ce93a6610A293c9dbaBf33F90';
-    const daiTokenAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359';
-    etherSwing = await EtherSwing.new(uniswapFactoryAddress, daiTokenAddress, {
-      from: owner
-    });
+    daiToken = await DaiToken.new('Dai', 'DAI', 18, 100000000);
+    uniswapExchange = await UniswapExchange.new();
+    uniswapFactory = await UniswapFactory.new();
+
+    await uniswapFactory.initializeFactory(uniswapExchange.address);
+    await uniswapFactory.createExchange(daiToken.address);
+
+    etherSwing = await EtherSwing.new(uniswapFactory.address, daiToken.address);
   });
 
   describe('initial state', async () => {
-    it('should have owner.', async () => {
-      expect(await etherSwing.getOwner()).equal(owner);
-    });
-
     it('should have no balance', async () => {
       expect(await etherSwing.getBalance()).to.be.bignumber.equal('0');
+    });
+
+    it('should have a dai token address', async () => {
+      expect(await etherSwing.daiTokenAddress()).to.have.lengthOf(42);
+    });
+
+    it('should have a uniswap factory address', async () => {
+      expect(await etherSwing.uniswapFactoryAddress()).to.have.lengthOf(42);
+    });
+
+    it('should have a dai exchange address', async () => {
+      expect(await etherSwing.uniswapDaiExchangeAddress()).to.have.lengthOf(42);
     });
   });
 
