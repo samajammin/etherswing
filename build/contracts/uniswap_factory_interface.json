@@ -1,0 +1,15 @@
+{
+  "contractName": "uniswap_factory_interface",
+  "abi": [],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "source": "contract UniswapFactoryInterface():\n    # Create Exchange\n    def createExchange(token: address) -> address: modifying\n    # Public Variables\n    def exchangeTemplate() -> address: constant\n    def tokenCount() -> uint256: constant\n    # Get Exchange and Token Info\n    def getExchange(token_addr: address) -> address: constant\n    def getToken(exchange: address) -> address: constant\n    def getTokenWithId(token_id: uint256) -> address: constant\n    # Initialize Factory\n    def initializeFactory(template: address): modifying",
+  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/uniswap_factory_interface.vy",
+  "compiler": {
+    "name": "vyper",
+    "version": "0.1.0b10"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.10",
+  "updatedAt": "2019-06-18T06:55:30.630Z"
+}
