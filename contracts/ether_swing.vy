@@ -5,6 +5,12 @@
 # import uniswap_factory_interface as UniswapFactoryInterface
 # import uniswap_exchange_interface as UniswapExchangeInterface
 
+struct CDP:
+  owner: address
+  lockedEth: uint256(wei)
+
+# Interfaces
+
 contract UniswapFactoryInterface():
     # Create Exchange
     def createExchange(token: address) -> address: modifying
@@ -56,15 +62,16 @@ contract UniswapExchangeInterface():
     # Setup
     def setup(token_addr: address): modifying
 
-# EtherSwing contract
-
 # Storage
+
 owner: address
 uniswapFactoryAddress: public(address)
 daiTokenAddress: public(address)
 uniswapFactory: UniswapFactoryInterface
-uniswapDaiExchangeAddress: public(address)
-uniswapDaiExchange: UniswapExchangeInterface
+daiExchangeAddress: public(address)
+daiExchange: UniswapExchangeInterface
+userToCDP: map(address, CDP)
+
 
 # Constructor
 @public
@@ -76,70 +83,65 @@ def __init__(uniswap_factory_address: address, dai_token_address: address):
   self.uniswapFactoryAddress = uniswap_factory_address
   self.daiTokenAddress = dai_token_address
   self.uniswapFactory = UniswapFactoryInterface(uniswap_factory_address)
-  self.uniswapDaiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)
-  self.uniswapDaiExchange = UniswapExchangeInterface(self.uniswapDaiExchangeAddress)
+  self.daiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)
+  self.daiExchange = UniswapExchangeInterface(self.daiExchangeAddress)
 
-# Fund the contract's treasury balance
+# Fund the contract's treasury
 @public
 @payable
 def fund():
   assert msg.value > 0, "Must send value to call this function."
 
-# Transfer contract's treasury balance
+# Transfer contract's treasury
 @public
 def transfer(recipient: address, amount: uint256(wei)):
   assert msg.sender == self.owner, "Must be contract owner to call this function."
   assert self.balance >= amount, "Insufficient contract balance."
   send(recipient, amount)
 
-# #######
-# Uniswap
-#########
+# Open leveraged ETH position
+@public
+@payable
+def openPosition(leverage: uint256):
+  assert msg.value > 0, "Must send value to call this function."
+  assert leverage < 3, "Leverage multiplier must be below 3." # TODO how to support decimals? 2.5x
+  ethLoan: uint256(wei) = msg.value * leverage
+  assert self.balance >= ethLoan, "Insufficient contract balance. Please use a smaller amount or try again later."
+  totalEth: uint256(wei) = msg.value + ethLoan
+
+  # check if msg.sender already has an open CDP
+  # if they do...
+    # add totalEth to existing CDP
+  # else...
+    # open CDP w/ totalEth
+  self.userToCDP[msg.sender] = CDP({owner: msg.sender, lockedEth: totalEth})
+
+# Close leveraged ETH position & return funds to user
+# @public
+# def closePosition():
+  # assert user has an open position
+  # use treasury balance to exchange ETH for Dai on Uniswap
+  # close CDP by sending Dai
+  # transfer all funds (minus ethLoan & fees) to msg.sender
 
 # TODO set private once tested
 # Exchange ETH for DAI on Uniswap, returns value of DAI received
-# @public
-# def exchangeDai(dai_contract: address, amount_eth: uint256) -> uint256:
+@public
+def exchangeDai(amount_eth: uint256) -> uint256:
+  min_tokens: uint256 = 1 #TODO: implement this correctly, see "sell order" logic in docs
+  deadline: timestamp = block.timestamp + 300
   # TODO how to send value (amount_eth) in contract call?
-  # amount_received = uniswap_dai_exchange.ethToTokenSwapInput.value(amount_eth)(min_tokens, deadline)
-  # min_tokens: uint256 = 1 #TODO: implement this correctly, see "sell order" logic in docs
-  # deadline: timestamp = block.timestamp + 300
+  amount_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens, deadline)
   # TODO call this from convertCurrency
-  # return min_tokens
-  # return self.uniswap_dai_exchange.ethToTokenSwapInput(min_tokens, deadline)
+  return amount_received
   # TODO send amount_received to user's CDP
 
 @public
 @constant
-def getBalance() -> uint256(wei):
+def getContractBalance() -> uint256(wei):
   return self.balance
 
-##########
-# MakerDAO
-##########
-
-# Storage
-# TODO mapping of user addresses to CDPs
-# TODO CDP struct
-
-# @public
-# @payable
-# def deposit():
-  # assert msg.value > 0, "Must send value to call this function."
-  # assert self.balance >= msg.value, "Insufficient contract balance to match deposit. Please use a smaller amount or try again later."
-  
-  # check if msg.sender already has an open cdp
-
-  # if they do...
-  # add msg.value & matching balance value to existing cdp
-        
-  # if not...
-  # use msg.value & matching balance value to open a cdp
-
-  # return anything?
-  # how to confirm cdp was opened / contributed to succesfully?
-
-# @public
-# def withdraw():
-  # close CDP
-  # transfer all funds (minus contract contribution & fees) to msg.sender
+@public
+@constant
+def getLockedEthBalance() -> uint256(wei):
+  return self.userToCDP[msg.sender].lockedEth

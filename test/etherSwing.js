@@ -13,7 +13,7 @@ contract('EtherSwing', accounts => {
   let etherSwing;
 
   const owner = accounts[0];
-  const other = accounts[1];
+  const user = accounts[1];
 
   beforeEach(async () => {
     daiToken = await DaiToken.new('Dai', 'DAI', 18, 100000000);
@@ -23,12 +23,20 @@ contract('EtherSwing', accounts => {
     await uniswapFactory.initializeFactory(uniswapExchange.address);
     await uniswapFactory.createExchange(daiToken.address);
 
-    etherSwing = await EtherSwing.new(uniswapFactory.address, daiToken.address);
+    etherSwing = await EtherSwing.new(
+      uniswapFactory.address,
+      daiToken.address,
+      {
+        value: 1000
+      }
+    );
   });
 
   describe('initial state', async () => {
-    it('should have no balance', async () => {
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('0');
+    it('should have balance', async () => {
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1000'
+      );
     });
 
     it('should have a dai token address', async () => {
@@ -40,15 +48,19 @@ contract('EtherSwing', accounts => {
     });
 
     it('should have a dai exchange address', async () => {
-      expect(await etherSwing.uniswapDaiExchangeAddress()).to.have.lengthOf(42);
+      expect(await etherSwing.daiExchangeAddress()).to.have.lengthOf(42);
     });
   });
 
   describe('fund()', async () => {
     it('should accept funds', async () => {
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('0');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1000'
+      );
       await etherSwing.fund({ from: owner, value: 500 });
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('500');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1500'
+      );
     });
 
     it('should fail if no value is sent', async () => {
@@ -62,24 +74,72 @@ contract('EtherSwing', accounts => {
   describe('transfer()', async () => {
     it('should transfer valid funds', async () => {
       await etherSwing.fund({ from: owner, value: 500 });
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('500');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1500'
+      );
       await etherSwing.transfer(owner, 300, { from: owner });
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('200');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1200'
+      );
     });
 
     it('should fail if not called by owner', async () => {
       await expectRevert(
-        etherSwing.transfer(other, 300, { from: other }),
+        etherSwing.transfer(user, 300, { from: user }),
         'Must be contract owner to call this function.'
       );
     });
 
     it('should fail for invalid funds', async () => {
       await etherSwing.fund({ from: owner, value: 500 });
-      expect(await etherSwing.getBalance()).to.be.bignumber.equal('500');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1500'
+      );
       await expectRevert(
-        etherSwing.transfer(owner, 800, { from: owner }),
+        etherSwing.transfer(owner, 8000, { from: owner }),
         'Insufficient contract balance.'
+      );
+    });
+  });
+
+  describe('openPosition()', async () => {
+    it('should open leveraged position', async () => {
+      expect(
+        await etherSwing.getLockedEthBalance({ from: user })
+      ).to.be.bignumber.equal('0');
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1000'
+      );
+      await etherSwing.openPosition(2, { from: user, value: 500 });
+      expect(await etherSwing.getContractBalance()).to.be.bignumber.equal(
+        '1500'
+      );
+      expect(
+        await etherSwing.getLockedEthBalance({ from: user })
+      ).to.be.bignumber.equal('1500');
+    });
+
+    it('should fail if no value is sent', async () => {
+      await expectRevert(
+        etherSwing.openPosition(2, { from: user }),
+        'Must send value to call this function.'
+      );
+    });
+
+    it('should fail if insufficient contract balance', async () => {
+      await expectRevert(
+        etherSwing.openPosition(2, {
+          from: user,
+          value: 2000
+        }),
+        'Insufficient contract balance. Please use a smaller amount or try again later.'
+      );
+    });
+
+    it('should fail if leverage is too high', async () => {
+      await expectRevert(
+        etherSwing.openPosition(5, { from: user, value: 500 }),
+        'Leverage multiplier must be below 3.'
       );
     });
   });
