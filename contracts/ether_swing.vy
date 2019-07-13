@@ -62,11 +62,20 @@ contract UniswapExchangeInterface():
     # Setup
     def setup(token_addr: address): modifying
 
+contract DaiTokenInterface():
+  def balanceOf(owner: address) -> uint256: constant
+  def approve(spender: address, amount: uint256) -> bool: modifying
+
+# Events
+
+Payment: event({_amount: uint256(wei), _from: indexed(address)})
+
 # Storage
 
 owner: address
 uniswapFactoryAddress: public(address)
 daiTokenAddress: public(address)
+daiToken: DaiTokenInterface
 uniswapFactory: UniswapFactoryInterface
 daiExchangeAddress: public(address)
 daiExchange: UniswapExchangeInterface
@@ -84,6 +93,17 @@ def __init__(uniswap_factory_address: address, dai_token_address: address):
   self.uniswapFactory = UniswapFactoryInterface(uniswap_factory_address)
   self.daiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)
   self.daiExchange = UniswapExchangeInterface(self.daiExchangeAddress)
+  # Approve Dai exchange to transfer funds
+  self.daiToken = DaiTokenInterface(dai_token_address)
+  self.daiToken.approve(self.daiExchangeAddress, 2**256 - 1)
+
+
+# Need default function to receive ETH from Dai exchange
+# https://vyper.readthedocs.io/en/v0.1.0-beta.10/structure-of-a-contract.html#default-function
+@public
+@payable
+def __default__():
+    log.Payment(msg.value, msg.sender)
 
 # Fund the contract's treasury
 @public
@@ -123,20 +143,26 @@ def openPosition(leverage: uint256):
   # close CDP by sending Dai
   # transfer all funds (minus ethLoan & fees) to msg.sender
 
-# TODO test function - remove
+# TODO set private once tested
+# Exchange DAI for ETH on Uniswap, returns value of ETH received
 @public
-@constant
-def getDaiExchangeAddress() -> address:
-  return self.daiExchange.tokenAddress()
+def exchangeDaiForEth(dai_to_sell: uint256) -> uint256(wei):
+  dai_balance: uint256 = self.daiToken.balanceOf(self)
+  assert dai_balance > dai_to_sell, "Insufficient contract balance to sell DAI."
+  min_eth_to_buy: uint256(wei) = 1
+  deadline: timestamp = block.timestamp + 300
+  eth_bought: uint256(wei) = self.daiExchange.tokenToEthSwapInput(dai_to_sell, min_eth_to_buy, deadline)
+  return eth_bought
+  # TODO send amount_received to user's CDP
 
 # TODO set private once tested
 # Exchange ETH for DAI on Uniswap, returns value of DAI received
 @public
-@payable # TODO remove once passing amount_wei as value works...
-def exchangeDai(amount_wei: uint256(wei)) -> uint256:
-  min_tokens: uint256 = 1 #TODO: implement this correctly, see "sell order" logic in docs
+def exchangeEthForDai(wei_to_sell: uint256(wei)) -> uint256:
+  assert self.balance >= wei_to_sell, "Insufficient contract balance to sell ETH."
+  min_tokens_to_buy: uint256 = 1
   deadline: timestamp = block.timestamp + 300
-  dai_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens, deadline, value=msg.value)
+  dai_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens_to_buy, deadline, value=wei_to_sell)
   return dai_received
   # TODO send amount_received to user's CDP
 

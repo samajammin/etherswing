@@ -60,9 +60,14 @@ module.exports = (deployer, network) => {
       OASIS_PROXY: '0xc72b03c37735cf122c27dc352e5f25f75beea389'
     };
 
+    const name = 'Dai';
+    const symbol = 'DAI';
+    const decimals = 18;
+    const supply = 100000000;
+
     deployer
       // Deploy Dai token contract
-      .deploy(DaiToken, 'Dai', 'DAI', 18, 10000)
+      .deploy(DaiToken, name, symbol, decimals, supply)
       .then(instance => (daiTokenInstance = instance))
       // Deploy UniswapExchange (exchange template) contract
       .then(() => deployer.deploy(UniswapExchange))
