@@ -72,7 +72,6 @@ daiExchangeAddress: public(address)
 daiExchange: UniswapExchangeInterface
 userToCDP: map(address, CDP)
 
-
 # Constructor
 @public
 @payable # TODO open vyper issue on error sending value... not obvious constructor must be payable
@@ -124,16 +123,21 @@ def openPosition(leverage: uint256):
   # close CDP by sending Dai
   # transfer all funds (minus ethLoan & fees) to msg.sender
 
+# TODO test function - remove
+@public
+@constant
+def getDaiExchangeAddress() -> address:
+  return self.daiExchange.tokenAddress()
+
 # TODO set private once tested
 # Exchange ETH for DAI on Uniswap, returns value of DAI received
 @public
-def exchangeDai(amount_eth: uint256) -> uint256:
+@payable # TODO remove once passing amount_wei as value works...
+def exchangeDai(amount_wei: uint256(wei)) -> uint256:
   min_tokens: uint256 = 1 #TODO: implement this correctly, see "sell order" logic in docs
   deadline: timestamp = block.timestamp + 300
-  # TODO how to send value (amount_eth) in contract call?
-  amount_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens, deadline)
-  # TODO call this from convertCurrency
-  return amount_received
+  dai_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens, deadline, value=msg.value)
+  return dai_received
   # TODO send amount_received to user's CDP
 
 @public

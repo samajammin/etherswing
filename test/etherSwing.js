@@ -10,19 +10,38 @@ contract('EtherSwing', accounts => {
   let daiToken;
   let uniswapExchange;
   let uniswapFactory;
+  let daiExchangeAddress;
+  let daiExchange;
   let etherSwing;
 
   const owner = accounts[0];
   const user = accounts[1];
 
+  const pointOneEthInWei = web3.utils.toWei('0.1', 'ether');
+  const oneEthInWei = web3.utils.toWei('1', 'ether');
+  const thousandEthInWei = web3.utils.toWei('1000', 'ether');
+
   beforeEach(async () => {
+    // Deploy Uniswap Dai exchange
     daiToken = await DaiToken.new('Dai', 'DAI', 18, 100000000);
     uniswapExchange = await UniswapExchange.new();
     uniswapFactory = await UniswapFactory.new();
 
     await uniswapFactory.initializeFactory(uniswapExchange.address);
     await uniswapFactory.createExchange(daiToken.address);
+    daiExchangeAddress = await uniswapFactory.getExchange(daiToken.address);
+    daiToken.approve(daiExchangeAddress, 100000);
+    daiExchange = await UniswapExchange.at(daiExchangeAddress);
 
+    const minLiquidity = 0;
+    const maxTokens = 10000;
+    const deadline = Math.floor(Date.now()) + 300;
+    await daiExchange.addLiquidity(minLiquidity, maxTokens, deadline, {
+      from: owner,
+      value: 1000000000
+    });
+
+    // Deploy EtherSwing
     etherSwing = await EtherSwing.new(
       uniswapFactory.address,
       daiToken.address,
@@ -31,6 +50,8 @@ contract('EtherSwing', accounts => {
       }
     );
   });
+
+  // TODO test uniswap functionality, e.g. liquidity
 
   describe('initial state', async () => {
     it('should have balance', async () => {
@@ -99,6 +120,26 @@ contract('EtherSwing', accounts => {
         etherSwing.transfer(owner, 8000, { from: owner }),
         'Insufficient contract balance.'
       );
+    });
+  });
+
+  describe('uniswap', async () => {
+    it('should have a Dai exchange', async () => {
+      expect(await daiExchange.factoryAddress()).to.eql(uniswapFactory.address);
+
+      const ethToToken = await daiExchange.getEthToTokenInputPrice(oneEthInWei);
+      expect(ethToToken).to.be.bignumber.equal('9999');
+
+      const tokenToEth = await daiExchange.getTokenToEthInputPrice(9999);
+      expect(tokenToEth).to.be.bignumber.equal('499223872');
+    });
+
+    it('can swap ETH for Dai', async () => {
+      const daiReceived = await etherSwing.exchangeDai(pointOneEthInWei, {
+        value: pointOneEthInWei, // TODO remove once passing 'value' works
+        from: user
+      });
+      expect(daiReceived).to.be.bignumber.equal('499223872'); // TODO fix... returns tx promise
     });
   });
 

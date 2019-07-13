@@ -46,7 +46,55 @@
       "gas": 36106
     },
     {
-      "name": "getBalance",
+      "name": "openPosition",
+      "outputs": [],
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "leverage"
+        }
+      ],
+      "constant": false,
+      "payable": true,
+      "type": "function",
+      "gas": 71797
+    },
+    {
+      "name": "getDaiExchangeAddress",
+      "outputs": [
+        {
+          "type": "address",
+          "name": "out"
+        }
+      ],
+      "inputs": [],
+      "constant": true,
+      "payable": false,
+      "type": "function",
+      "gas": 2085
+    },
+    {
+      "name": "exchangeDai",
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": "out"
+        }
+      ],
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "amount_wei",
+          "unit": "wei"
+        }
+      ],
+      "constant": false,
+      "payable": true,
+      "type": "function",
+      "gas": 36914
+    },
+    {
+      "name": "getContractBalance",
       "outputs": [
         {
           "type": "uint256",
@@ -58,21 +106,22 @@
       "constant": true,
       "payable": false,
       "type": "function",
-      "gas": 742
+      "gas": 832
     },
     {
-      "name": "owner",
+      "name": "getLockedEthBalance",
       "outputs": [
         {
-          "type": "address",
-          "name": "out"
+          "type": "uint256",
+          "name": "out",
+          "unit": "wei"
         }
       ],
       "inputs": [],
       "constant": true,
       "payable": false,
       "type": "function",
-      "gas": 573
+      "gas": 852
     },
     {
       "name": "uniswapFactoryAddress",
@@ -86,7 +135,7 @@
       "constant": true,
       "payable": false,
       "type": "function",
-      "gas": 603
+      "gas": 693
     },
     {
       "name": "daiTokenAddress",
@@ -100,12 +149,26 @@
       "constant": true,
       "payable": false,
       "type": "function",
-      "gas": 633
+      "gas": 723
+    },
+    {
+      "name": "daiExchangeAddress",
+      "outputs": [
+        {
+          "type": "address",
+          "name": "out"
+        }
+      ],
+      "inputs": [],
+      "constant": true,
+      "payable": false,
+      "type": "function",
+      "gas": 753
     }
   ],
-  "bytecode": "0x740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a05260406103e36101403960206103e360c03960c05160205181106100af57600080fd5b50602060206103e30160c03960c05160205181106100cc57600080fd5b50600061014051186100dd57600080fd5b600061016051186100ed57600080fd5b3360005561014051600155610160516002556103cb56600035601c52740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a05263b60d42886000511415610115576308c379a0610140526020610160526026610180527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101a0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101c05261018050600034116101135760a461015cfd5b005b63a9059cbb600051141561022a576040600461014037341561013657600080fd5b600435602051811061014757600080fd5b506308c379a06101805260206101a052602d6101c0527f4d75737420626520636f6e7472616374206f776e657220746f2063616c6c20746101e0527f6869732066756e6374696f6e2e00000000000000000000000000000000000000610200526101c05060005433146101bb5760a461019cfd5b6308c379a061024052602061026052601e610280527f496e73756666696369656e7420636f6e74726163742062616c616e63652e00006102a05261028050610160513031101561020c57608461025cfd5b600060006000600061016051610140516000f161022857600080fd5b005b6312065fe0600051141561024f57341561024357600080fd5b303160005260206000f3005b638da5cb5b600051141561027557341561026857600080fd5b60005460005260206000f3005b633655ac3c600051141561029b57341561028e57600080fd5b60015460005260206000f3005b632eaee35e60005114156102c15734156102b457600080fd5b60025460005260206000f3005b60006000fd5b6101046103cb036101046000396101046103cb036000f3",
-  "deployedBytecode": "0x600035601c52740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a05263b60d42886000511415610115576308c379a0610140526020610160526026610180527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101a0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101c05261018050600034116101135760a461015cfd5b005b63a9059cbb600051141561022a576040600461014037341561013657600080fd5b600435602051811061014757600080fd5b506308c379a06101805260206101a052602d6101c0527f4d75737420626520636f6e7472616374206f776e657220746f2063616c6c20746101e0527f6869732066756e6374696f6e2e00000000000000000000000000000000000000610200526101c05060005433146101bb5760a461019cfd5b6308c379a061024052602061026052601e610280527f496e73756666696369656e7420636f6e74726163742062616c616e63652e00006102a05261028050610160513031101561020c57608461025cfd5b600060006000600061016051610140516000f161022857600080fd5b005b6312065fe0600051141561024f57341561024357600080fd5b303160005260206000f3005b638da5cb5b600051141561027557341561026857600080fd5b60005460005260206000f3005b633655ac3c600051141561029b57341561028e57600080fd5b60015460005260206000f3005b632eaee35e60005114156102c15734156102b457600080fd5b60025460005260206000f3005b60006000fd",
-  "source": "# NOTE: import statements are currently interpreted from CWD. See:\n# https://github.com/ethereum/vyper/pull/1361\n# So must call compile command from within /contracts/\nimport uniswap_factory_interface as UniswapFactoryInterface\nimport uniswap_exchange_interface as UniswapExchangeInterface\n\n# EtherSwing contract\n\n# Storage\nowner: public(address) # TODO: make private\nuniswapFactoryAddress: public(address)\ndaiTokenAddress: public(address)\n# uniswap_dai_exchange_address: public(address)\n# uniswap_factory: UniswapFactoryInterface\n# uniswap_dai_exchange: UniswapExchangeInterface\n\n# Constructor\n@public\n@payable # TODO vyper issue on error sending value... not obvious constructor must be payable\ndef __init__(uniswap_factory_address: address, dai_token_address: address):\n  assert uniswap_factory_address != ZERO_ADDRESS\n  assert dai_token_address != ZERO_ADDRESS\n  self.owner = msg.sender\n  self.uniswapFactoryAddress = uniswap_factory_address\n  self.daiTokenAddress = dai_token_address\n  # self.uniswap_factory_address = _uniswap_factory_address\n  # self.uniswap_factory = UniswapFactoryInterface(_uniswap_factory_address)\n  # self.uniswap_dai_exchange_address = self.uniswap_factory.getExchange(_dai_token_address)\n  # self.uniswap_dai_exchange = UniswapExchangeInterface(self.uniswap_dai_exchange_address)\n\n# Fund the contract's treasury balance\n@public\n@payable\ndef fund():\n  assert msg.value > 0, \"Must send value to call this function.\"\n\n# Transfer contract's treasury balance\n@public\ndef transfer(recipient: address, amount: uint256(wei)):\n  assert msg.sender == self.owner, \"Must be contract owner to call this function.\"\n  assert self.balance >= amount, \"Insufficient contract balance.\"\n  send(recipient, amount)\n\n# #######\n# Uniswap\n#########\n\n# TODO set private once tested\n# Exchange ETH for DAI on Uniswap, returns value of DAI received\n# @public\n# def exchangeDai(dai_contract: address, amount_eth: uint256) -> uint256:\n  # TODO how to send value (amount_eth) in contract call?\n  # amount_received = uniswap_dai_exchange.ethToTokenSwapInput.value(amount_eth)(min_tokens, deadline)\n  # min_tokens: uint256 = 1 #TODO: implement this correctly, see \"sell order\" logic in docs\n  # deadline: timestamp = block.timestamp + 300\n  # TODO call this from convertCurrency\n  # return min_tokens\n  # return self.uniswap_dai_exchange.ethToTokenSwapInput(min_tokens, deadline)\n  # TODO send amount_received to user's CDP\n\n@public\n@constant\ndef getBalance() -> uint256(wei):\n  return self.balance\n\n##########\n# MakerDAO\n##########\n\n# Storage\n# TODO mapping of user addresses to CDPs\n# TODO CDP struct\n\n# @public\n# @payable\n# def deposit():\n  # assert msg.value > 0, \"Must send value to call this function.\"\n  # assert self.balance >= msg.value, \"Insufficient contract balance to match deposit. Please use a smaller amount or try again later.\"\n  \n  # check if msg.sender already has an open cdp\n\n  # if they do...\n  # add msg.value & matching balance value to existing cdp\n        \n  # if not...\n  # use msg.value & matching balance value to open a cdp\n\n  # return anything?\n  # how to confirm cdp was opened / contributed to succesfully?\n\n# @public\n# def withdraw():\n  # close CDP\n  # transfer all funds (minus contract contribution & fees) to msg.sender\n",
+  "bytecode": "0x740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a052604061078561014039602061078560c03960c05160205181106100af57600080fd5b50602060206107850160c03960c05160205181106100cc57600080fd5b50600061014051186100dd57600080fd5b600061016051186100ed57600080fd5b336000556101405160015561016051600255610140516003556003543b61011357600080fd5b600354301861012157600080fd5b602061020060246306f2bf6261018052610160516101a05261019c6003545afa61014a57600080fd5b6000506102005160045560045460055561076d56600035601c52740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a05263b60d42886000511415610115576308c379a0610140526020610160526026610180527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101a0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101c05261018050600034116101135760a461015cfd5b005b63a9059cbb600051141561022a576040600461014037341561013657600080fd5b600435602051811061014757600080fd5b506308c379a06101805260206101a052602d6101c0527f4d75737420626520636f6e7472616374206f776e657220746f2063616c6c20746101e0527f6869732066756e6374696f6e2e00000000000000000000000000000000000000610200526101c05060005433146101bb5760a461019cfd5b6308c379a061024052602061026052601e610280527f496e73756666696369656e7420636f6e74726163742062616c616e63652e00006102a05261028050610160513031101561020c57608461025cfd5b600060006000600061016051610140516000f161022857600080fd5b005b6399ff820360005114156104325760206004610140376308c379a06101605260206101805260266101a0527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101c0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101e0526101a050600034116102b25760a461017cfd5b6308c379a0610220526020610240526024610260527f4c65766572616765206d756c7469706c696572206d7573742062652062656c6f610280527f7720332e000000000000000000000000000000000000000000000000000000006102a05261026050600361014051106103275760a461023cfd5b341515610335576000610352565b6101405134610140513402041461034b57600080fd5b6101405134025b6102e0526308c379a061030052602061032052604e610340527f496e73756666696369656e7420636f6e74726163742062616c616e63652e2050610360527f6c6561736520757365206120736d616c6c657220616d6f756e74206f72207472610380527f7920616761696e206c617465722e0000000000000000000000000000000000006103a052610340506102e051303110156103f15760c461031cfd5b346102e0513401101561040357600080fd5b6102e05134016103e05260063360e05260c052604060c02060c052602060c0203381556103e051600182015550005b63c8d99aad600051141561049857341561044b57600080fd5b6005543b61045857600080fd5b600554301861046657600080fd5b60206101a06004639d76ea586101405261015c6005545afa61048757600080fd5b6000506101a05160005260206000f3005b6347b424f160005114156105345760206004610140376001610160524261012c420110156104c557600080fd5b61012c4201610180526005543b6104db57600080fd5b60055430186104e957600080fd5b6020610260604463f39b5b9b6101c052610160516101e05261018051610200526101dc346005545af161051b57600080fd5b600050610260516101a0526101a05160005260206000f3005b636f9fb98a600051141561055957341561054d57600080fd5b303160005260206000f3005b63f462fc7c600051141561059657341561057257600080fd5b600160063360e05260c052604060c02060c052602060c020015460005260206000f3005b633655ac3c60005114156105bc5734156105af57600080fd5b60015460005260206000f3005b632eaee35e60005114156105e25734156105d557600080fd5b60025460005260206000f3005b63391d152060005114156106085734156105fb57600080fd5b60045460005260206000f3005b60006000fd5b61015f61076d0361015f60003961015f61076d036000f3",
+  "deployedBytecode": "0x600035601c52740100000000000000000000000000000000000000006020526f7fffffffffffffffffffffffffffffff6040527fffffffffffffffffffffffffffffffff8000000000000000000000000000000060605274012a05f1fffffffffffffffffffffffffdabf41c006080527ffffffffffffffffffffffffed5fa0e000000000000000000000000000000000060a05263b60d42886000511415610115576308c379a0610140526020610160526026610180527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101a0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101c05261018050600034116101135760a461015cfd5b005b63a9059cbb600051141561022a576040600461014037341561013657600080fd5b600435602051811061014757600080fd5b506308c379a06101805260206101a052602d6101c0527f4d75737420626520636f6e7472616374206f776e657220746f2063616c6c20746101e0527f6869732066756e6374696f6e2e00000000000000000000000000000000000000610200526101c05060005433146101bb5760a461019cfd5b6308c379a061024052602061026052601e610280527f496e73756666696369656e7420636f6e74726163742062616c616e63652e00006102a05261028050610160513031101561020c57608461025cfd5b600060006000600061016051610140516000f161022857600080fd5b005b6399ff820360005114156104325760206004610140376308c379a06101605260206101805260266101a0527f4d7573742073656e642076616c756520746f2063616c6c20746869732066756e6101c0527f6374696f6e2e00000000000000000000000000000000000000000000000000006101e0526101a050600034116102b25760a461017cfd5b6308c379a0610220526020610240526024610260527f4c65766572616765206d756c7469706c696572206d7573742062652062656c6f610280527f7720332e000000000000000000000000000000000000000000000000000000006102a05261026050600361014051106103275760a461023cfd5b341515610335576000610352565b6101405134610140513402041461034b57600080fd5b6101405134025b6102e0526308c379a061030052602061032052604e610340527f496e73756666696369656e7420636f6e74726163742062616c616e63652e2050610360527f6c6561736520757365206120736d616c6c657220616d6f756e74206f72207472610380527f7920616761696e206c617465722e0000000000000000000000000000000000006103a052610340506102e051303110156103f15760c461031cfd5b346102e0513401101561040357600080fd5b6102e05134016103e05260063360e05260c052604060c02060c052602060c0203381556103e051600182015550005b63c8d99aad600051141561049857341561044b57600080fd5b6005543b61045857600080fd5b600554301861046657600080fd5b60206101a06004639d76ea586101405261015c6005545afa61048757600080fd5b6000506101a05160005260206000f3005b6347b424f160005114156105345760206004610140376001610160524261012c420110156104c557600080fd5b61012c4201610180526005543b6104db57600080fd5b60055430186104e957600080fd5b6020610260604463f39b5b9b6101c052610160516101e05261018051610200526101dc346005545af161051b57600080fd5b600050610260516101a0526101a05160005260206000f3005b636f9fb98a600051141561055957341561054d57600080fd5b303160005260206000f3005b63f462fc7c600051141561059657341561057257600080fd5b600160063360e05260c052604060c02060c052602060c020015460005260206000f3005b633655ac3c60005114156105bc5734156105af57600080fd5b60015460005260206000f3005b632eaee35e60005114156105e25734156105d557600080fd5b60025460005260206000f3005b63391d152060005114156106085734156105fb57600080fd5b60045460005260206000f3005b60006000fd",
+  "source": "# NOTE: import statements are currently interpreted from CWD. See:\n# https://github.com/ethereum/vyper/pull/1361\n# So must call compile command from within /contracts/\n# TODO figure out imports...\n# import uniswap_factory_interface as UniswapFactoryInterface\n# import uniswap_exchange_interface as UniswapExchangeInterface\n\nstruct CDP:\n  owner: address\n  lockedEth: uint256(wei)\n\n# Interfaces\n\ncontract UniswapFactoryInterface():\n    # Create Exchange\n    def createExchange(token: address) -> address: modifying\n    # Public Variables\n    def exchangeTemplate() -> address: constant\n    def tokenCount() -> uint256: constant\n    # Get Exchange and Token Info\n    def getExchange(token_addr: address) -> address: constant\n    def getToken(exchange: address) -> address: constant\n    def getTokenWithId(token_id: uint256) -> address: constant\n    # Initialize Factory\n    def initializeFactory(template: address): modifying\n\ncontract UniswapExchangeInterface():\n    # Public Variables\n    def tokenAddress() -> address: constant\n    def factoryAddress() -> address: constant\n    # Providing Liquidity\n    def addLiquidity(min_liquidity: uint256, max_tokens: uint256, deadline: timestamp) -> uint256: modifying\n    def removeLiquidity(amount: uint256, min_eth: uint256(wei), min_tokens: uint256, deadline: timestamp) -> (uint256(wei), uint256): modifying\n    # Trading\n    def ethToTokenSwapInput(min_tokens: uint256, deadline: timestamp) -> uint256: modifying\n    def ethToTokenTransferInput(min_tokens: uint256, deadline: timestamp, recipient: address) -> uint256: modifying\n    def ethToTokenSwapOutput(tokens_bought: uint256, deadline: timestamp) -> uint256(wei): modifying\n    def ethToTokenTransferOutput(tokens_bought: uint256, deadline: timestamp, recipient: address) -> uint256(wei): modifying\n    def tokenToEthSwapInput(tokens_sold: uint256, min_eth: uint256(wei), deadline: timestamp) -> uint256(wei): modifying\n    def tokenToEthTransferInput(tokens_sold: uint256, min_eth: uint256(wei), deadline: timestamp, recipient: address) -> uint256(wei): modifying\n    def tokenToEthSwapOutput(eth_bought: uint256(wei), max_tokens: uint256, deadline: timestamp) -> uint256: modifying\n    def tokenToEthTransferOutput(eth_bought: uint256(wei), max_tokens: uint256, deadline: timestamp, recipient: address) -> uint256: modifying\n    def tokenToTokenSwapInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, token_addr: address) -> uint256: modifying\n    def tokenToTokenTransferInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, recipient: address, token_addr: address) -> uint256: modifying\n    def tokenToTokenSwapOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, token_addr: address) -> uint256: modifying\n    def tokenToTokenTransferOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, recipient: address, token_addr: address) -> uint256: modifying\n    def tokenToExchangeSwapInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, exchange_addr: address) -> uint256: modifying\n    def tokenToExchangeTransferInput(tokens_sold: uint256, min_tokens_bought: uint256, min_eth_bought: uint256(wei), deadline: timestamp, recipient: address, exchange_addr: address) -> uint256: modifying\n    def tokenToExchangeSwapOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, exchange_addr: address) -> uint256: modifying\n    def tokenToExchangeTransferOutput(tokens_bought: uint256, max_tokens_sold: uint256, max_eth_sold: uint256(wei), deadline: timestamp, recipient: address, exchange_addr: address) -> uint256: modifying\n    # Get Price\n    def getEthToTokenInputPrice(eth_sold: uint256(wei)) -> uint256: constant\n    def getEthToTokenOutputPrice(tokens_bought: uint256) -> uint256(wei): constant\n    def getTokenToEthInputPrice(tokens_sold: uint256) -> uint256(wei): constant\n    def getTokenToEthOutputPrice(eth_bought: uint256(wei)) -> uint256: constant\n    # Pool Token ERC20 Compatibility\n    def balanceOf() -> address: constant\n    def allowance(_owner : address, _spender : address) -> uint256: constant\n    def transfer(_to : address, _value : uint256) -> bool: modifying\n    def transferFrom(_from : address, _to : address, _value : uint256) -> bool: modifying\n    def approve(_spender : address, _value : uint256) -> bool: modifying\n    # Setup\n    def setup(token_addr: address): modifying\n\n# Storage\n\nowner: address\nuniswapFactoryAddress: public(address)\ndaiTokenAddress: public(address)\nuniswapFactory: UniswapFactoryInterface\ndaiExchangeAddress: public(address)\ndaiExchange: UniswapExchangeInterface\nuserToCDP: map(address, CDP)\n\n# Constructor\n@public\n@payable # TODO open vyper issue on error sending value... not obvious constructor must be payable\ndef __init__(uniswap_factory_address: address, dai_token_address: address):\n  assert uniswap_factory_address != ZERO_ADDRESS\n  assert dai_token_address != ZERO_ADDRESS\n  self.owner = msg.sender\n  self.uniswapFactoryAddress = uniswap_factory_address\n  self.daiTokenAddress = dai_token_address\n  self.uniswapFactory = UniswapFactoryInterface(uniswap_factory_address)\n  self.daiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)\n  self.daiExchange = UniswapExchangeInterface(self.daiExchangeAddress)\n\n# Fund the contract's treasury\n@public\n@payable\ndef fund():\n  assert msg.value > 0, \"Must send value to call this function.\"\n\n# Transfer contract's treasury\n@public\ndef transfer(recipient: address, amount: uint256(wei)):\n  assert msg.sender == self.owner, \"Must be contract owner to call this function.\"\n  assert self.balance >= amount, \"Insufficient contract balance.\"\n  send(recipient, amount)\n\n# Open leveraged ETH position\n@public\n@payable\ndef openPosition(leverage: uint256):\n  assert msg.value > 0, \"Must send value to call this function.\"\n  assert leverage < 3, \"Leverage multiplier must be below 3.\" # TODO how to support decimals? 2.5x\n  ethLoan: uint256(wei) = msg.value * leverage\n  assert self.balance >= ethLoan, \"Insufficient contract balance. Please use a smaller amount or try again later.\"\n  totalEth: uint256(wei) = msg.value + ethLoan\n\n  # check if msg.sender already has an open CDP\n  # if they do...\n    # add totalEth to existing CDP\n  # else...\n    # open CDP w/ totalEth\n  self.userToCDP[msg.sender] = CDP({owner: msg.sender, lockedEth: totalEth})\n\n# Close leveraged ETH position & return funds to user\n# @public\n# def closePosition():\n  # assert user has an open position\n  # use treasury balance to exchange ETH for Dai on Uniswap\n  # close CDP by sending Dai\n  # transfer all funds (minus ethLoan & fees) to msg.sender\n\n# TODO test function - remove\n@public\n@constant\ndef getDaiExchangeAddress() -> address:\n  return self.daiExchange.tokenAddress()\n\n# TODO set private once tested\n# Exchange ETH for DAI on Uniswap, returns value of DAI received\n@public\n@payable # TODO remove once passing amount_wei as value works...\ndef exchangeDai(amount_wei: uint256(wei)) -> uint256:\n  min_tokens: uint256 = 1 #TODO: implement this correctly, see \"sell order\" logic in docs\n  deadline: timestamp = block.timestamp + 300\n  dai_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens, deadline, value=msg.value)\n  return dai_received\n  # TODO send amount_received to user's CDP\n\n@public\n@constant\ndef getContractBalance() -> uint256(wei):\n  return self.balance\n\n@public\n@constant\ndef getLockedEthBalance() -> uint256(wei):\n  return self.userToCDP[msg.sender].lockedEth",
   "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/ether_swing.vy",
   "compiler": {
     "name": "vyper",
@@ -115,10 +178,10 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x55a925fbFB61A20fAfd57e80E04FAcf354Df2B87",
-      "transactionHash": "0x15338b85ebf1fa3b297c8e6e6de2a79a2c5bf791d94d3934ec333f1c6e26a2d3"
+      "address": "0x756DDDdF176513214551F116BE17F371083D45f0",
+      "transactionHash": "0xcd75d9d39d7355bf347a06070d314dbbb1ae1b30a6d53a62795d4b79b350e060"
     }
   },
   "schemaVersion": "3.0.10",
-  "updatedAt": "2019-06-28T18:03:57.459Z"
+  "updatedAt": "2019-07-13T04:23:11.773Z"
 }
