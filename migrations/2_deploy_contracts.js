@@ -2,39 +2,44 @@ const EtherSwing = artifacts.require('ether_swing');
 const DaiToken = artifacts.require('erc20_token');
 const UniswapExchange = artifacts.require('uniswap_exchange');
 const UniswapFactory = artifacts.require('uniswap_factory');
+const DSToken = artifacts.require('DSToken');
 
 // TODO refactor to async
 module.exports = (deployer, network) => {
   const uniswapFactoryAddresses = {
     mainnet: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
+    mainlocal: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
+    'mainlocal-fork': '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
     rinkeby: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
   };
-  // TODO add correct addresses
   const daiTokenAddresses = {
     mainnet: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-    rinkeby: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'
+    mainlocal: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+    'mainlocal-fork': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+    rinkeby: '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
   };
 
-  /*  
-  Steps for dev environment:
-    - Deploy Dai token contract
-    - Deploy UniswapExchange (exchange template) contract
-    - Deploy UniswapFactory contract
-    - Initialize UniswapFactory with UniswapExchange address
-    - Deploy Dai UniswapExchange contract
-    - Approve Dai UniswapExchange contract to transfer Dai
-    - Add liquidity to Dai UniswapExchange
-    - Deploy EtherSwing
-  */
-  if (network === 'develop') {
-    let daiTokenInstance;
-    let exchangeTemplateInstance;
-    let factoryInstance;
-    let daiExchangeAddress;
-    let daiExchangeInstance;
+  let daiTokenInstance;
+  let exchangeTemplateInstance;
+  let factoryInstance;
+  let daiExchangeAddress;
+  let daiExchangeInstance;
 
-    let etherSwingInstance;
-    let daiExchanged;
+  let etherSwingInstance;
+  let daiExchanged;
+
+  if (network === 'develop') {
+    /*  
+    Steps for dev environment:
+      - Deploy Dai token contract
+      - Deploy UniswapExchange (exchange template) contract
+      - Deploy UniswapFactory contract
+      - Initialize UniswapFactory with UniswapExchange address
+      - Deploy Dai UniswapExchange contract
+      - Approve Dai UniswapExchange contract to transfer Dai
+      - Add liquidity to Dai UniswapExchange
+      - Deploy EtherSwing
+    */
 
     const makerDaoContracts = {
       ETH_FROM: '0x16fb96a5fa0427af0c8f7cf1eb4870231c8154b6',
@@ -107,8 +112,9 @@ module.exports = (deployer, network) => {
       )
       .then(instance => (etherSwingInstance = instance))
       .catch(err => console.log(err));
-  } else if (network === 'mainnet' || network === 'rinkeby') {
-    // if mainnet or rinkeby, only deploy EtherSwing
+  } else if (
+    ['mainnet', 'rinkeby', 'mainlocal', 'mainlocal-fork'].includes(network)
+  ) {
     deployer.deploy(
       EtherSwing,
       uniswapFactoryAddresses[network],

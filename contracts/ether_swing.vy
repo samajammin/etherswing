@@ -73,8 +73,8 @@ Payment: event({_amount: uint256(wei), _from: indexed(address)})
 # Storage
 
 owner: address
-uniswapFactoryAddress: public(address)
-daiTokenAddress: public(address)
+# uniswapFactoryAddress: public(address)
+# daiTokenAddress: public(address)
 daiToken: DaiTokenInterface
 uniswapFactory: UniswapFactoryInterface
 daiExchangeAddress: public(address)
@@ -88,8 +88,8 @@ def __init__(uniswap_factory_address: address, dai_token_address: address):
   assert uniswap_factory_address != ZERO_ADDRESS
   assert dai_token_address != ZERO_ADDRESS
   self.owner = msg.sender
-  self.uniswapFactoryAddress = uniswap_factory_address
-  self.daiTokenAddress = dai_token_address
+  # self.uniswapFactoryAddress = uniswap_factory_address
+  # self.daiTokenAddress = dai_token_address
   self.uniswapFactory = UniswapFactoryInterface(uniswap_factory_address)
   self.daiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)
   self.daiExchange = UniswapExchangeInterface(self.daiExchangeAddress)

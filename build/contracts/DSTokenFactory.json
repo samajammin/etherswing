@@ -1,0 +1,1221 @@
+{
+  "contractName": "DSTokenFactory",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "LogMake",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "name",
+          "type": "bytes32"
+        }
+      ],
+      "name": "make",
+      "outputs": [
+        {
+          "name": "result",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.4.24+commit.e67f0147\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"name\":\"symbol\",\"type\":\"bytes32\"},{\"name\":\"name\",\"type\":\"bytes32\"}],\"name\":\"make\",\"outputs\":[{\"name\":\"result\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"token\",\"type\":\"address\"}],\"name\":\"LogMake\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/factory.sol\":\"DSTokenFactory\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-auth/auth.sol\":{\"keccak256\":\"0x1bf3448fa76cd23d146e7e60ac14e5124816a654d6a363afc444a599772cc529\",\"urls\":[\"bzzr://5c9a453014b245d5191c8436aa86aeca6ef91c95790a2e90378c7d045a7d2748\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-math/math.sol\":{\"keccak256\":\"0x2a15e6ac060bf165a037fa058ac525ed8752a8af7897b09591d94a0ad06cc445\",\"urls\":[\"bzzr://3b187cc0f8e7e46e01226526c569e97b1f739987b375d118d747896ea0a3a4ca\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-note/note.sol\":{\"keccak256\":\"0x28f936887cd43c3b6211cc1e57b1a8d71e4d168629c3e04e4d19cf6d22c23c98\",\"urls\":[\"bzzr://4a69bcc8d2fc6b982d1a6ae64fc2e6310efa44fca1b62a1d53c7e5d0541b9397\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-stop/stop.sol\":{\"keccak256\":\"0x71bc83d6f89202d64465fc20d61b913c442deb75dc342ef9c5d0477c32ecc5e7\",\"urls\":[\"bzzr://cc1b121461105dc8b3f7b81362d3734a0bf7040b5462de90b61de5d50877f0d6\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/base.sol\":{\"keccak256\":\"0x73da70df5210c9fe3b6fb99994f2abc0d6b121d5c0353877332a49bb5f539341\",\"urls\":[\"bzzr://1861ad9d7b6023d4d9a95b61bd437360e029154167907868283be8e0aabddf07\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/factory.sol\":{\"keccak256\":\"0x2e14ed2fca6d6de33145b6317567a78d6293165f0841f85ebc0f30c169350ec7\",\"urls\":[\"bzzr://bf182324c01cdc5f8ce129080c14bde9fe9e8c7bd1ae4544b3ab9c5846feafcd\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/token.sol\":{\"keccak256\":\"0xb878591c8f4ac531ff34e62d4ac41ea92cc73a73f39c5395ad9616e003eca9a6\",\"urls\":[\"bzzr://b4fbf4f8461ed67c1194d76fa55f3c57bcc07da02784a146f57e156939df688e\"]},\"/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/erc20/erc20.sol\":{\"keccak256\":\"0x38516a1c2e4c33455f487d72669e0c63e8cfb32496ddb9d69eb17ea352015af3\",\"urls\":[\"bzzr://23de312522d1a638a13a5ef947c57e5aaac2d33839f7678753eca3facc8e8e35\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5061100f806100206000396000f3006080604052600436106100405763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663bc95f1788114610045575b600080fd5b34801561005157600080fd5b50610060600435602435610089565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b600082610094610219565b90815260405190819003602001906000f0801580156100b7573d6000803e3d6000fd5b50604080517f5ac801fe00000000000000000000000000000000000000000000000000000000815260048101859052905191925073ffffffffffffffffffffffffffffffffffffffff831691635ac801fe9160248082019260009290919082900301818387803b15801561012a57600080fd5b505af115801561013e573d6000803e3d6000fd5b5050604080517f13af4035000000000000000000000000000000000000000000000000000000008152336004820152905173ffffffffffffffffffffffffffffffffffffffff851693506313af40359250602480830192600092919082900301818387803b1580156101af57600080fd5b505af11580156101c3573d6000803e3d6000fd5b50506040805173ffffffffffffffffffffffffffffffffffffffff8516815290513393507f88e71feaf6e9ea8e2693164312db79ffaf5e4143f3f8b51c8e0c304fb6f5dd2592509081900360200190a292915050565b604051610dba8061022a83390190560060806040526012600655600060075534801561001a57600080fd5b50604051602080610dba8339810160408181529151336000818152600160205293842084905583805560048054600160a060020a03191682179055909290917fce241d7ca1f669fee44b6fc00b8eba2df3bb514eed0f6f668f8f89096e81ed949190a2600555610d2b8061008f6000396000f3006080604052600436106101485763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde03811461014d57806307da68f514610174578063095ea7b31461018b57806313af4035146101c357806318160ddd146101e457806323b872dd146101f9578063313ce5671461022357806340c10f191461023857806342966c681461025c5780635ac801fe1461027457806370a082311461028c57806375f12b21146102ad5780637a9e5e4b146102c25780638da5cb5b146102e357806395d89b41146103145780639dc29fac14610329578063a0712d681461034d578063a9059cbb14610365578063b753a98c14610389578063bb35783b146103ad578063be9a6555146103d7578063bf7e214f146103ec578063daea85c514610401578063dd62ed3e14610422578063f2d5d56b14610449575b600080fd5b34801561015957600080fd5b5061016261046d565b60408051918252519081900360200190f35b34801561018057600080fd5b50610189610473565b005b34801561019757600080fd5b506101af600160a060020a036004351660243561050d565b604080519115158252519081900360200190f35b3480156101cf57600080fd5b50610189600160a060020a036004351661053a565b3480156101f057600080fd5b506101626105b8565b34801561020557600080fd5b506101af600160a060020a03600435811690602435166044356105be565b34801561022f57600080fd5b50610162610721565b34801561024457600080fd5b50610189600160a060020a0360043516602435610727565b34801561026857600080fd5b506101896004356107ef565b34801561028057600080fd5b506101896004356107fc565b34801561029857600080fd5b50610162600160a060020a0360043516610822565b3480156102b957600080fd5b506101af61083d565b3480156102ce57600080fd5b50610189600160a060020a036004351661084d565b3480156102ef57600080fd5b506102f86108cb565b60408051600160a060020a039092168252519081900360200190f35b34801561032057600080fd5b506101626108da565b34801561033557600080fd5b50610189600160a060020a03600435166024356108e0565b34801561035957600080fd5b50610189600435610a3e565b34801561037157600080fd5b506101af600160a060020a0360043516602435610a48565b34801561039557600080fd5b50610189600160a060020a0360043516602435610a55565b3480156103b957600080fd5b50610189600160a060020a0360043581169060243516604435610a65565b3480156103e357600080fd5b50610189610a76565b3480156103f857600080fd5b506102f8610b0a565b34801561040d57600080fd5b506101af600160a060020a0360043516610b19565b34801561042e57600080fd5b50610162600160a060020a0360043581169060243516610b3f565b34801561045557600080fd5b50610189600160a060020a0360043516602435610b6a565b60075481565b61048933600035600160e060020a031916610b75565b151561049457600080fd5b60408051348082526020820183815236938301849052600435936024359384938693339360008035600160e060020a031916949092606082018484808284376040519201829003965090945050505050a450506004805474ff0000000000000000000000000000000000000000191660a060020a179055565b60045460009060a060020a900460ff161561052757600080fd5b6105318383610c79565b90505b92915050565b61055033600035600160e060020a031916610b75565b151561055b57600080fd5b6004805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383811691909117918290556040519116907fce241d7ca1f669fee44b6fc00b8eba2df3bb514eed0f6f668f8f89096e81ed9490600090a250565b60005490565b60045460009060a060020a900460ff16156105d857600080fd5b600160a060020a03841633148015906106165750600160a060020a038416600090815260026020908152604080832033845290915290205460001914155b1561066e57600160a060020a03841660009081526002602090815260408083203384529091529020546106499083610cdf565b600160a060020a03851660009081526002602090815260408083203384529091529020555b600160a060020a0384166000908152600160205260409020546106919083610cdf565b600160a060020a0380861660009081526001602052604080822093909355908516815220546106c09083610cef565b600160a060020a0380851660008181526001602090815260409182902094909455805186815290519193928816927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef92918290030190a35060019392505050565b60065481565b61073d33600035600160e060020a031916610b75565b151561074857600080fd5b60045460a060020a900460ff161561075f57600080fd5b600160a060020a0382166000908152600160205260409020546107829082610cef565b600160a060020a038316600090815260016020526040812091909155546107a99082610cef565b600055604080518281529051600160a060020a038416917f0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885919081900360200190a25050565b6107f933826108e0565b50565b61081233600035600160e060020a031916610b75565b151561081d57600080fd5b600755565b600160a060020a031660009081526001602052604090205490565b60045460a060020a900460ff1681565b61086333600035600160e060020a031916610b75565b151561086e57600080fd5b6003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383811691909117918290556040519116907f1abebea81bfa2637f28358c371278fb15ede7ea8dd28d2e03b112ff6d936ada490600090a250565b600454600160a060020a031681565b60055481565b6108f633600035600160e060020a031916610b75565b151561090157600080fd5b60045460a060020a900460ff161561091857600080fd5b600160a060020a03821633148015906109565750600160a060020a038216600090815260026020908152604080832033845290915290205460001914155b156109ae57600160a060020a03821660009081526002602090815260408083203384529091529020546109899082610cdf565b600160a060020a03831660009081526002602090815260408083203384529091529020555b600160a060020a0382166000908152600160205260409020546109d19082610cdf565b600160a060020a038316600090815260016020526040812091909155546109f89082610cdf565b600055604080518281529051600160a060020a038416917fcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5919081900360200190a25050565b6107f93382610727565b60006105313384846105be565b610a603383836105be565b505050565b610a708383836105be565b50505050565b610a8c33600035600160e060020a031916610b75565b1515610a9757600080fd5b60408051348082526020820183815236938301849052600435936024359384938693339360008035600160e060020a031916949092606082018484808284376040519201829003965090945050505050a450506004805474ff000000000000000000000000000000000000000019169055565b600354600160a060020a031681565b60045460009060a060020a900460ff1615610b3357600080fd5b61053482600019610c79565b600160a060020a03918216600090815260026020908152604080832093909416825291909152205490565b610a608233836105be565b6000600160a060020a038316301415610b9057506001610534565b600454600160a060020a0384811691161415610bae57506001610534565b600354600160a060020a03161515610bc857506000610534565b600354604080517fb7009613000000000000000000000000000000000000000000000000000000008152600160a060020a038681166004830152306024830152600160e060020a0319861660448301529151919092169163b70096139160648083019260209291908290030181600087803b158015610c4657600080fd5b505af1158015610c5a573d6000803e3d6000fd5b505050506040513d6020811015610c7057600080fd5b50519050610534565b336000818152600260209081526040808320600160a060020a038716808552908352818420869055815186815291519394909390927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925928290030190a350600192915050565b8082038281111561053457600080fd5b8082018281101561053457600080fd00a165627a7a72305820cb9ed9d28422489e90cb9afcff67b8b33eee1678cabbb2189815f9847636fe2e0029a165627a7a72305820c84e20c14276f799891187b8fcbf5bb88a35a9c7a52c350dbb430675e39366ef0029",
+  "deployedBytecode": "0x6080604052600436106100405763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663bc95f1788114610045575b600080fd5b34801561005157600080fd5b50610060600435602435610089565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b600082610094610219565b90815260405190819003602001906000f0801580156100b7573d6000803e3d6000fd5b50604080517f5ac801fe00000000000000000000000000000000000000000000000000000000815260048101859052905191925073ffffffffffffffffffffffffffffffffffffffff831691635ac801fe9160248082019260009290919082900301818387803b15801561012a57600080fd5b505af115801561013e573d6000803e3d6000fd5b5050604080517f13af4035000000000000000000000000000000000000000000000000000000008152336004820152905173ffffffffffffffffffffffffffffffffffffffff851693506313af40359250602480830192600092919082900301818387803b1580156101af57600080fd5b505af11580156101c3573d6000803e3d6000fd5b50506040805173ffffffffffffffffffffffffffffffffffffffff8516815290513393507f88e71feaf6e9ea8e2693164312db79ffaf5e4143f3f8b51c8e0c304fb6f5dd2592509081900360200190a292915050565b604051610dba8061022a83390190560060806040526012600655600060075534801561001a57600080fd5b50604051602080610dba8339810160408181529151336000818152600160205293842084905583805560048054600160a060020a03191682179055909290917fce241d7ca1f669fee44b6fc00b8eba2df3bb514eed0f6f668f8f89096e81ed949190a2600555610d2b8061008f6000396000f3006080604052600436106101485763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde03811461014d57806307da68f514610174578063095ea7b31461018b57806313af4035146101c357806318160ddd146101e457806323b872dd146101f9578063313ce5671461022357806340c10f191461023857806342966c681461025c5780635ac801fe1461027457806370a082311461028c57806375f12b21146102ad5780637a9e5e4b146102c25780638da5cb5b146102e357806395d89b41146103145780639dc29fac14610329578063a0712d681461034d578063a9059cbb14610365578063b753a98c14610389578063bb35783b146103ad578063be9a6555146103d7578063bf7e214f146103ec578063daea85c514610401578063dd62ed3e14610422578063f2d5d56b14610449575b600080fd5b34801561015957600080fd5b5061016261046d565b60408051918252519081900360200190f35b34801561018057600080fd5b50610189610473565b005b34801561019757600080fd5b506101af600160a060020a036004351660243561050d565b604080519115158252519081900360200190f35b3480156101cf57600080fd5b50610189600160a060020a036004351661053a565b3480156101f057600080fd5b506101626105b8565b34801561020557600080fd5b506101af600160a060020a03600435811690602435166044356105be565b34801561022f57600080fd5b50610162610721565b34801561024457600080fd5b50610189600160a060020a0360043516602435610727565b34801561026857600080fd5b506101896004356107ef565b34801561028057600080fd5b506101896004356107fc565b34801561029857600080fd5b50610162600160a060020a0360043516610822565b3480156102b957600080fd5b506101af61083d565b3480156102ce57600080fd5b50610189600160a060020a036004351661084d565b3480156102ef57600080fd5b506102f86108cb565b60408051600160a060020a039092168252519081900360200190f35b34801561032057600080fd5b506101626108da565b34801561033557600080fd5b50610189600160a060020a03600435166024356108e0565b34801561035957600080fd5b50610189600435610a3e565b34801561037157600080fd5b506101af600160a060020a0360043516602435610a48565b34801561039557600080fd5b50610189600160a060020a0360043516602435610a55565b3480156103b957600080fd5b50610189600160a060020a0360043581169060243516604435610a65565b3480156103e357600080fd5b50610189610a76565b3480156103f857600080fd5b506102f8610b0a565b34801561040d57600080fd5b506101af600160a060020a0360043516610b19565b34801561042e57600080fd5b50610162600160a060020a0360043581169060243516610b3f565b34801561045557600080fd5b50610189600160a060020a0360043516602435610b6a565b60075481565b61048933600035600160e060020a031916610b75565b151561049457600080fd5b60408051348082526020820183815236938301849052600435936024359384938693339360008035600160e060020a031916949092606082018484808284376040519201829003965090945050505050a450506004805474ff0000000000000000000000000000000000000000191660a060020a179055565b60045460009060a060020a900460ff161561052757600080fd5b6105318383610c79565b90505b92915050565b61055033600035600160e060020a031916610b75565b151561055b57600080fd5b6004805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383811691909117918290556040519116907fce241d7ca1f669fee44b6fc00b8eba2df3bb514eed0f6f668f8f89096e81ed9490600090a250565b60005490565b60045460009060a060020a900460ff16156105d857600080fd5b600160a060020a03841633148015906106165750600160a060020a038416600090815260026020908152604080832033845290915290205460001914155b1561066e57600160a060020a03841660009081526002602090815260408083203384529091529020546106499083610cdf565b600160a060020a03851660009081526002602090815260408083203384529091529020555b600160a060020a0384166000908152600160205260409020546106919083610cdf565b600160a060020a0380861660009081526001602052604080822093909355908516815220546106c09083610cef565b600160a060020a0380851660008181526001602090815260409182902094909455805186815290519193928816927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef92918290030190a35060019392505050565b60065481565b61073d33600035600160e060020a031916610b75565b151561074857600080fd5b60045460a060020a900460ff161561075f57600080fd5b600160a060020a0382166000908152600160205260409020546107829082610cef565b600160a060020a038316600090815260016020526040812091909155546107a99082610cef565b600055604080518281529051600160a060020a038416917f0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885919081900360200190a25050565b6107f933826108e0565b50565b61081233600035600160e060020a031916610b75565b151561081d57600080fd5b600755565b600160a060020a031660009081526001602052604090205490565b60045460a060020a900460ff1681565b61086333600035600160e060020a031916610b75565b151561086e57600080fd5b6003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383811691909117918290556040519116907f1abebea81bfa2637f28358c371278fb15ede7ea8dd28d2e03b112ff6d936ada490600090a250565b600454600160a060020a031681565b60055481565b6108f633600035600160e060020a031916610b75565b151561090157600080fd5b60045460a060020a900460ff161561091857600080fd5b600160a060020a03821633148015906109565750600160a060020a038216600090815260026020908152604080832033845290915290205460001914155b156109ae57600160a060020a03821660009081526002602090815260408083203384529091529020546109899082610cdf565b600160a060020a03831660009081526002602090815260408083203384529091529020555b600160a060020a0382166000908152600160205260409020546109d19082610cdf565b600160a060020a038316600090815260016020526040812091909155546109f89082610cdf565b600055604080518281529051600160a060020a038416917fcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5919081900360200190a25050565b6107f93382610727565b60006105313384846105be565b610a603383836105be565b505050565b610a708383836105be565b50505050565b610a8c33600035600160e060020a031916610b75565b1515610a9757600080fd5b60408051348082526020820183815236938301849052600435936024359384938693339360008035600160e060020a031916949092606082018484808284376040519201829003965090945050505050a450506004805474ff000000000000000000000000000000000000000019169055565b600354600160a060020a031681565b60045460009060a060020a900460ff1615610b3357600080fd5b61053482600019610c79565b600160a060020a03918216600090815260026020908152604080832093909416825291909152205490565b610a608233836105be565b6000600160a060020a038316301415610b9057506001610534565b600454600160a060020a0384811691161415610bae57506001610534565b600354600160a060020a03161515610bc857506000610534565b600354604080517fb7009613000000000000000000000000000000000000000000000000000000008152600160a060020a038681166004830152306024830152600160e060020a0319861660448301529151919092169163b70096139160648083019260209291908290030181600087803b158015610c4657600080fd5b505af1158015610c5a573d6000803e3d6000fd5b505050506040513d6020811015610c7057600080fd5b50519050610534565b336000818152600260209081526040808320600160a060020a038716808552908352818420869055815186815291519394909390927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925928290030190a350600192915050565b8082038281111561053457600080fd5b8082018281101561053457600080fd00a165627a7a72305820cb9ed9d28422489e90cb9afcff67b8b33eee1678cabbb2189815f9847636fe2e0029a165627a7a72305820c84e20c14276f799891187b8fcbf5bb88a35a9c7a52c350dbb430675e39366ef0029",
+  "sourceMap": "49:329:20:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;49:329:20;;;;;;;",
+  "deployedSourceMap": "49:329:20:-;;;;;;;;;;;;;;;;;;;;;;;137:239;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;137:239:20;;;;;;;;;;;;;;;;;;;;;;;;;;;211:14;258:6;246:19;;:::i;:::-;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;275:20:20;;;;;;;;;;;;;;237:28;;-1:-1:-1;275:14:20;;;;;;:20;;;;;;;;;;;;;;;;:14;:20;;;5:2:-1;;;;30:1;27;20:12;5:2;275:20:20;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;;305:27:20;;;;;;321:10;305:27;;;;;;:15;;;;-1:-1:-1;305:15:20;;-1:-1:-1;305:27:20;;;;;-1:-1:-1;;305:27:20;;;;;;;-1:-1:-1;305:15:20;:27;;;5:2:-1;;;;30:1;27;20:12;5:2;305:27:20;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;;342:27:20;;;;;;;;;;350:10;;-1:-1:-1;342:27:20;;-1:-1:-1;342:27:20;;;;;;;;137:239;;;;:::o;49:329::-;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.18;\n\nimport \"./token.sol\";\n\ncontract DSTokenFactory {\n    event LogMake(address indexed owner, address token);\n\n    function make(\n        bytes32 symbol, bytes32 name\n    ) public returns (DSToken result) {\n        result = new DSToken(symbol);\n        result.setName(name);\n        result.setOwner(msg.sender);\n        LogMake(msg.sender, result);\n    }\n}\n",
+  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/factory.sol",
+  "ast": {
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/factory.sol",
+    "exportedSymbols": {
+      "DSTokenFactory": [
+        3452
+      ]
+    },
+    "id": 3453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3408,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".18"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/token.sol",
+        "file": "./token.sol",
+        "id": 3409,
+        "nodeType": "ImportDirective",
+        "scope": 3453,
+        "sourceUnit": 3796,
+        "src": "26:21:20",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [
+          3795
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 3452,
+        "linearizedBaseContracts": [
+          3452
+        ],
+        "name": "DSTokenFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 3415,
+            "name": "LogMake",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 3414,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3411,
+                  "indexed": true,
+                  "name": "owner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3415,
+                  "src": "93:21:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3410,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "93:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3413,
+                  "indexed": false,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3415,
+                  "src": "116:13:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3412,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "116:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "92:38:20"
+            },
+            "src": "79:52:20"
+          },
+          {
+            "body": {
+              "id": 3450,
+              "nodeType": "Block",
+              "src": "227:149:20",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3429,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 3424,
+                      "name": "result",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3422,
+                      "src": "237:6:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_DSToken_$3795",
+                        "typeString": "contract DSToken"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 3427,
+                          "name": "symbol",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3417,
+                          "src": "258:6:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        ],
+                        "id": 3426,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "NewExpression",
+                        "src": "246:11:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_creation_nonpayable$_t_bytes32_$returns$_t_contract$_DSToken_$3795_$",
+                          "typeString": "function (bytes32) returns (contract DSToken)"
+                        },
+                        "typeName": {
+                          "contractScope": null,
+                          "id": 3425,
+                          "name": "DSToken",
+                          "nodeType": "UserDefinedTypeName",
+                          "referencedDeclaration": 3795,
+                          "src": "250:7:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_contract$_DSToken_$3795",
+                            "typeString": "contract DSToken"
+                          }
+                        }
+                      },
+                      "id": 3428,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "246:19:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_DSToken_$3795",
+                        "typeString": "contract DSToken"
+                      }
+                    },
+                    "src": "237:28:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_DSToken_$3795",
+                      "typeString": "contract DSToken"
+                    }
+                  },
+                  "id": 3430,
+                  "nodeType": "ExpressionStatement",
+                  "src": "237:28:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 3434,
+                        "name": "name",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3419,
+                        "src": "290:4:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3431,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "275:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      },
+                      "id": 3433,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "setName",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3794,
+                      "src": "275:14:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_bytes32_$returns$__$",
+                        "typeString": "function (bytes32) external"
+                      }
+                    },
+                    "id": 3435,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "275:20:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3436,
+                  "nodeType": "ExpressionStatement",
+                  "src": "275:20:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3440,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 7754,
+                          "src": "321:3:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 3441,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "321:10:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3437,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "305:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      },
+                      "id": 3439,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "setOwner",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 2148,
+                      "src": "305:15:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
+                        "typeString": "function (address) external"
+                      }
+                    },
+                    "id": 3442,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "305:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3443,
+                  "nodeType": "ExpressionStatement",
+                  "src": "305:27:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3445,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 7754,
+                          "src": "350:3:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 3446,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "350:10:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 3447,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "362:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      ],
+                      "id": 3444,
+                      "name": "LogMake",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3415,
+                      "src": "342:7:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$returns$__$",
+                        "typeString": "function (address,address)"
+                      }
+                    },
+                    "id": 3448,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "342:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3449,
+                  "nodeType": "ExpressionStatement",
+                  "src": "342:27:20"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 3451,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "make",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3420,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3417,
+                  "name": "symbol",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "160:14:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3416,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "160:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3419,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "176:12:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3418,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "176:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "150:44:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3423,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3422,
+                  "name": "result",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "211:14:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_DSToken_$3795",
+                    "typeString": "contract DSToken"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3421,
+                    "name": "DSToken",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3795,
+                    "src": "211:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_DSToken_$3795",
+                      "typeString": "contract DSToken"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "210:16:20"
+            },
+            "scope": 3452,
+            "src": "137:239:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 3453,
+        "src": "49:329:20"
+      }
+    ],
+    "src": "0:379:20"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/factory.sol",
+    "exportedSymbols": {
+      "DSTokenFactory": [
+        3452
+      ]
+    },
+    "id": 3453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3408,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".18"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai/ds-token/token.sol",
+        "file": "./token.sol",
+        "id": 3409,
+        "nodeType": "ImportDirective",
+        "scope": 3453,
+        "sourceUnit": 3796,
+        "src": "26:21:20",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [
+          3795
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 3452,
+        "linearizedBaseContracts": [
+          3452
+        ],
+        "name": "DSTokenFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 3415,
+            "name": "LogMake",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 3414,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3411,
+                  "indexed": true,
+                  "name": "owner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3415,
+                  "src": "93:21:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3410,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "93:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3413,
+                  "indexed": false,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3415,
+                  "src": "116:13:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3412,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "116:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "92:38:20"
+            },
+            "src": "79:52:20"
+          },
+          {
+            "body": {
+              "id": 3450,
+              "nodeType": "Block",
+              "src": "227:149:20",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3429,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 3424,
+                      "name": "result",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3422,
+                      "src": "237:6:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_DSToken_$3795",
+                        "typeString": "contract DSToken"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 3427,
+                          "name": "symbol",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3417,
+                          "src": "258:6:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        ],
+                        "id": 3426,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "NewExpression",
+                        "src": "246:11:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_creation_nonpayable$_t_bytes32_$returns$_t_contract$_DSToken_$3795_$",
+                          "typeString": "function (bytes32) returns (contract DSToken)"
+                        },
+                        "typeName": {
+                          "contractScope": null,
+                          "id": 3425,
+                          "name": "DSToken",
+                          "nodeType": "UserDefinedTypeName",
+                          "referencedDeclaration": 3795,
+                          "src": "250:7:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_contract$_DSToken_$3795",
+                            "typeString": "contract DSToken"
+                          }
+                        }
+                      },
+                      "id": 3428,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "246:19:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_DSToken_$3795",
+                        "typeString": "contract DSToken"
+                      }
+                    },
+                    "src": "237:28:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_DSToken_$3795",
+                      "typeString": "contract DSToken"
+                    }
+                  },
+                  "id": 3430,
+                  "nodeType": "ExpressionStatement",
+                  "src": "237:28:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 3434,
+                        "name": "name",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3419,
+                        "src": "290:4:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3431,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "275:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      },
+                      "id": 3433,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "setName",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3794,
+                      "src": "275:14:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_bytes32_$returns$__$",
+                        "typeString": "function (bytes32) external"
+                      }
+                    },
+                    "id": 3435,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "275:20:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3436,
+                  "nodeType": "ExpressionStatement",
+                  "src": "275:20:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3440,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 7754,
+                          "src": "321:3:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 3441,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "321:10:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3437,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "305:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      },
+                      "id": 3439,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "setOwner",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 2148,
+                      "src": "305:15:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
+                        "typeString": "function (address) external"
+                      }
+                    },
+                    "id": 3442,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "305:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3443,
+                  "nodeType": "ExpressionStatement",
+                  "src": "305:27:20"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3445,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 7754,
+                          "src": "350:3:20",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 3446,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "350:10:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 3447,
+                        "name": "result",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3422,
+                        "src": "362:6:20",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_contract$_DSToken_$3795",
+                          "typeString": "contract DSToken"
+                        }
+                      ],
+                      "id": 3444,
+                      "name": "LogMake",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3415,
+                      "src": "342:7:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$returns$__$",
+                        "typeString": "function (address,address)"
+                      }
+                    },
+                    "id": 3448,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "342:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3449,
+                  "nodeType": "ExpressionStatement",
+                  "src": "342:27:20"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 3451,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "make",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3420,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3417,
+                  "name": "symbol",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "160:14:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3416,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "160:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3419,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "176:12:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3418,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "176:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "150:44:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3423,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3422,
+                  "name": "result",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3451,
+                  "src": "211:14:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_DSToken_$3795",
+                    "typeString": "contract DSToken"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3421,
+                    "name": "DSToken",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3795,
+                    "src": "211:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_DSToken_$3795",
+                      "typeString": "contract DSToken"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "210:16:20"
+            },
+            "scope": 3452,
+            "src": "137:239:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 3453,
+        "src": "49:329:20"
+      }
+    ],
+    "src": "0:379:20"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.10",
+  "updatedAt": "2019-07-16T04:23:02.472Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

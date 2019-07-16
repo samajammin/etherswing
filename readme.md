@@ -41,5 +41,21 @@ Once your virtualenv is activated, running `vyper --version` should output:
 Install project dependencies
 
 ```bash
-$ yarn
+yarn
 ```
+
+## Development
+
+In order to run the `mainlocal` network, set up a local [ganache](https://github.com/trufflesuite/ganache-cli) chain that is a fork of Ethereum's mainnet. The easiet way is to create an [Infura](https://infura.io) project. Then run:
+
+```bash
+ganache-cli --fork https://mainnet.infura.io/v3/{your-infura-project-id}@8159055
+```
+
+This will fork the mainnet at block 8159055, allowing you to interact with mainnet contracts and storage (e.g. the MakerDAO system). When using Truffle, make sure to run:
+
+```bash
+truffle console --network mainlocal
+```
+
+Otherwise, running `truffle develop` will spin up a separate ganache instance.
