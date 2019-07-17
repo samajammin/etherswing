@@ -5,7 +5,7 @@ const UniswapFactory = artifacts.require('uniswap_factory');
 const constants = require('../utils/constants');
 
 module.exports = async (deployer, network) => {
-  if (['develop', 'test'].includes(network)) {
+  if (['develop', 'development', 'test'].includes(network)) {
     /*  
     Steps for dev environment:
       - Deploy Dai token contract
@@ -24,6 +24,8 @@ module.exports = async (deployer, network) => {
     const supply = 100000000;
 
     // Deploy Dai token contract
+    // TODO update to use MakerDAO's Dai from previous deploy script
+    // TODO delete erc20_token.vy & artifact
     await deployer.deploy(DaiToken, name, symbol, decimals, supply);
     const daiTokenInstance = await DaiToken.at(DaiToken.address);
 
@@ -64,6 +66,7 @@ module.exports = async (deployer, network) => {
   } else if (
     ['mainnet', 'rinkeby', 'mainlocal', 'mainlocal-fork'].includes(network)
   ) {
+    console.log(`Skipping Uniswap deploy for network: ${network}`);
     deployer.deploy(
       EtherSwing,
       constants.uniswapFactoryAddresses[network],

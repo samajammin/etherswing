@@ -25,18 +25,33 @@
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
-  // quiet: true,
+  // quiet: true, // uncomment to silence compiler & migration logs
   networks: {
+    // environment when running `truffle develop`
+    develop: {
+      host: '127.0.0.1',
+      port: 8545,
+      network_id: '*' // Match any network id
+    },
+    // environment when running `truffle migrate`
+    development: {
+      host: '127.0.0.1',
+      port: 8545,
+      network_id: '*' // Match any network id
+    },
+    // environment using mainnet contracts & data @ block 8159055 in local development
+    // start the ganache chain in terminal:
+    // ganache-cli --fork https://mainnet.infura.io/v3/{your-infura-project-id}
+    // then run:
+    // truffle console --network mainlocal
     mainlocal: {
-      // for local development using mainnet contracts & data @ block 8159055
-      // start the ganache chain in terminal:
-      // ganache-cli --fork https://mainnet.infura.io/v3/{your-infura-project-id}
       host: '127.0.0.1',
       port: 8545,
       network_id: '1',
       skipDryRun: true,
       gas: 6000000
     }
+    // TODO not needed...?
     // needed for running 'migrate' on 'mainlocal'... truffle adds '-fork':
     // https://github.com/trufflesuite/truffle/blob/81a290f1e1beda24bd9deb10999a07ac64a8d602/packages/truffle-environment/environment.js#L40
     // 'mainlocal-fork': {

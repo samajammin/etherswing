@@ -82,6 +82,7 @@ daiExchange: UniswapExchangeInterface
 userToCDP: map(address, CDP)
 
 # Constructor
+# TODO simplify... pass in daiExchangeAddress directly? or safer to use factory to get? could it ever change?
 @public
 @payable # TODO open vyper issue on error sending value... not obvious constructor must be payable
 def __init__(uniswap_factory_address: address, dai_token_address: address):
