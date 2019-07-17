@@ -25,6 +25,7 @@
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
+  // quiet: true,
   networks: {
     mainlocal: {
       // for local development using mainnet contracts & data @ block 8159055
