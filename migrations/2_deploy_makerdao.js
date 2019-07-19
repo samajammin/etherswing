@@ -24,6 +24,7 @@ const SaiTub = artifacts.require('SaiTub');
 
 const pointOneEthInWei = web3.utils.toWei('0.1', 'ether');
 const oneEthInWei = web3.utils.toWei('1', 'ether');
+const tenEthInWei = web3.utils.toWei('10', 'ether');
 const thousandEthInWei = web3.utils.toWei('1000', 'ether');
 
 const saiProxyShutAbi = {
@@ -154,40 +155,43 @@ module.exports = async (deployer, network, accounts) => {
     await saiProxyCreateAndExecute.createOpenLockAndDraw(
       ProxyRegistry.address,
       tubAddress,
-      pointOneEthInWei,
-      { value: oneEthInWei }
+      oneEthInWei,
+      { value: tenEthInWei }
     );
     console.log(
       'Dai balance after CDP created: ' + (await sai.balanceOf(cdpOwner))
     );
 
-    // Close CDP
+    // Mint MKR
     const proxyRegistry = await ProxyRegistry.at(ProxyRegistry.address);
     const proxyAddress = await proxyRegistry.proxies(cdpOwner);
     const proxy = await Proxy.at(proxyAddress);
 
-    await gov.mint(cdpOwner, pointOneEthInWei);
+    console.log('MKR balance before mint: ' + (await gov.balanceOf(cdpOwner)));
+    await gov.mint(cdpOwner, oneEthInWei);
     await gov.approve(proxy.address, thousandEthInWei);
     await sai.approve(proxy.address, thousandEthInWei);
+    console.log('MKR balance after mint: ' + (await gov.balanceOf(cdpOwner)));
 
-    const cupIdsBelongingToProxy = await getCupdIdsForLad(tub, proxy.address);
-    const cdpOwnerLatestCup =
-      cupIdsBelongingToProxy[cupIdsBelongingToProxy.length - 1];
+    // Close CDP
+    // console.log(
+    //   'MKR balance before CDP shut: ' + (await gov.balanceOf(cdpOwner))
+    // );
+    // const cupIdsBelongingToProxy = await getCupdIdsForLad(tub, proxy.address);
+    // const cdpOwnerLatestCup =
+    //   cupIdsBelongingToProxy[cupIdsBelongingToProxy.length - 1];
 
-    console.log(
-      'MKR balance before CDP shut: ' + (await gov.balanceOf(cdpOwner))
-    );
-    const functionCall = web3.eth.abi.encodeFunctionCall(saiProxyShutAbi, [
-      tubAddress,
-      cdpOwnerLatestCup
-    ]);
-    await proxy.execute(saiProxyCreateAndExecute.address, functionCall);
-    console.log(
-      'MKR balance after CDP shut: ' + (await gov.balanceOf(cdpOwner))
-    );
-    console.log(
-      'Dai balance after CDP shut: ' + (await sai.balanceOf(cdpOwner))
-    );
+    // const functionCall = web3.eth.abi.encodeFunctionCall(saiProxyShutAbi, [
+    //   tubAddress,
+    //   cdpOwnerLatestCup
+    // ]);
+    // await proxy.execute(saiProxyCreateAndExecute.address, functionCall);
+    // console.log(
+    //   'MKR balance after CDP shut: ' + (await gov.balanceOf(cdpOwner))
+    // );
+    // console.log(
+    //   'Dai balance after CDP shut: ' + (await sai.balanceOf(cdpOwner))
+    // );
   } else {
     console.log(`Skipping MakerDAO deploy for network: ${network}`);
   }

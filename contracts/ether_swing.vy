@@ -1,9 +1,4 @@
-# NOTE: import statements are currently interpreted from CWD. See:
-# https://github.com/ethereum/vyper/pull/1361
-# So must call compile command from within /contracts/
-# TODO figure out imports...
-# import uniswap_factory_interface as UniswapFactoryInterface
-# import uniswap_exchange_interface as UniswapExchangeInterface
+from vyper.interfaces import ERC20
 
 struct CDP:
   owner: address
@@ -11,7 +6,7 @@ struct CDP:
 
 # Interfaces
 
-contract UniswapFactoryInterface():
+contract UniswapFactory():
     # Create Exchange
     def createExchange(token: address) -> address: modifying
     # Public Variables
@@ -24,7 +19,7 @@ contract UniswapFactoryInterface():
     # Initialize Factory
     def initializeFactory(template: address): modifying
 
-contract UniswapExchangeInterface():
+contract UniswapExchange():
     # Public Variables
     def tokenAddress() -> address: constant
     def factoryAddress() -> address: constant
@@ -62,41 +57,55 @@ contract UniswapExchangeInterface():
     # Setup
     def setup(token_addr: address): modifying
 
-contract DaiTokenInterface():
-  def balanceOf(owner: address) -> uint256: constant
-  def approve(spender: address, amount: uint256) -> bool: modifying
+contract MakerTub():
+  def wipe(cup: bytes32, wad: uint256): modifying
+  def gov() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def sai() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def tab(cup: bytes32) -> uint256: modifying
+  def rap(cup: bytes32) -> uint256: modifying
+  def pep() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
 
 # Events
 
+# TODO add events for user actions
 Payment: event({_amount: uint256(wei), _from: indexed(address)})
 
 # Storage
 
 owner: address
-# uniswapFactoryAddress: public(address)
-# daiTokenAddress: public(address)
-daiToken: DaiTokenInterface
-uniswapFactory: UniswapFactoryInterface
-daiExchangeAddress: public(address)
-daiExchange: UniswapExchangeInterface
 userToCDP: map(address, CDP)
 
+daiToken: ERC20
+uniswapFactory: public(UniswapFactory) # TODO no need to be public
+daiExchange: public(UniswapExchange)
+makerTub: public(MakerTub)
+
 # Constructor
-# TODO simplify... pass in daiExchangeAddress directly? or safer to use factory to get? could it ever change?
+# TODO pass in MakerTub address. will need interface
+# w/ MakerTub interface, can get dai address & weth address
 @public
-@payable # TODO open vyper issue on error sending value... not obvious constructor must be payable
-def __init__(uniswap_factory_address: address, dai_token_address: address):
+@payable
+def __init__(uniswap_factory_address: address, mkr_tub_address: address, dai_token_address: address):
   assert uniswap_factory_address != ZERO_ADDRESS
-  assert dai_token_address != ZERO_ADDRESS
+  assert mkr_tub_address != ZERO_ADDRESS
   self.owner = msg.sender
-  # self.uniswapFactoryAddress = uniswap_factory_address
-  # self.daiTokenAddress = dai_token_address
-  self.uniswapFactory = UniswapFactoryInterface(uniswap_factory_address)
-  self.daiExchangeAddress = self.uniswapFactory.getExchange(dai_token_address)
-  self.daiExchange = UniswapExchangeInterface(self.daiExchangeAddress)
-  # Approve Dai exchange to transfer funds
-  self.daiToken = DaiTokenInterface(dai_token_address)
-  self.daiToken.approve(self.daiExchangeAddress, 2**256 - 1)
+
+  # Get Dai address
+  self.makerTub = MakerTub(mkr_tub_address)
+  # TODO doesn't work :( 
+    # b/c SaiTub.sai() refers to an interface?? Even though it returns an address?
+    # daiTokenAddress: address = self.makerTub.sai()
+  # TODO approve MakerTub to transfer Dai & MKR
+
+  # Get Dai exchange
+  self.uniswapFactory = UniswapFactory(uniswap_factory_address)
+  # TODO change mkr_tub_address to daiTokenAddress
+  daiExchangeAddress: address = self.uniswapFactory.getExchange(dai_token_address)
+  self.daiExchange = UniswapExchange(daiExchangeAddress)
+
+  # # Approve Dai exchange to transfer funds
+  self.daiToken = ERC20(dai_token_address)
+  self.daiToken.approve(daiExchangeAddress, MAX_UINT256)
 
 
 # Need default function to receive ETH from Dai exchange

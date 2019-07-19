@@ -1,44 +1,68 @@
-// const MAX_UINT = 2 ** 256 - 1;
 // TODO "ReferenceError: web3 is not defined"
 // const pointOneEthInWei = web3.utils.toWei('0.1', 'ether');
 // const oneEthInWei = web3.utils.toWei('1', 'ether');
 // const tenEthInWei = web3.utils.toWei('10', 'ether');
 // const oneHundredEthInWei = web3.utils.toWei('100', 'ether');
 // const oneThousandEthInWei = web3.utils.toWei('1000', 'ether');
-const uniswapFactoryAddresses = {
+const uniswapFactoryContracts = {
   mainnet: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
   mainlocal: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
-  'mainlocal-fork': '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
+  'mainlocal-fork': '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95', // TODO delete?
   rinkeby: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
 };
-const daiTokenAddresses = {
-  mainnet: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-  mainlocal: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-  'mainlocal-fork': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-  rinkeby: '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
-};
+//  https://developer.makerdao.com/dai/1/api/
 const makerDaoContracts = {
-  ETH_FROM: '0x16fb96a5fa0427af0c8f7cf1eb4870231c8154b6',
-  GEM: '0x7ba25f791fa76c3ef40ac98ed42634a8bc24c238',
-  GOV: '0x1c3ac7216250edc5b9daa5598da0579688b9dbd5',
-  PIP: '0xb7092ee7a8c4c85431962662310bbdcd4fd519e9',
-  PEP: '0xc0ee05307ae4a5316f34874a3525d10c94b3c217',
-  PIT: '0x0000000000000000000000000000000000000123',
-  ADM: '0x4986c24c7f752c2ac2d738f1270639dd9e9d7bf5',
-  SAI: '0xc226f3cd13d508bc319f4f4290172748199d6612',
-  SIN: '0xe9e2b40d676fc998ede8c676d9f529ccbbc13740',
-  SKR: '0xa6164a2e88e258a663772ed4912a0865af8f6d06',
-  DAD: '0x7b61731911e46da837e3dcd2d8797de684c8ced1',
-  MOM: '0x603d52d6ae2b98a49f8f32817ad4effe7e8a2502',
-  VOX: '0xe16bf7aafeb33cc921d6d311e0ff33c4faa836dd',
-  TUB: '0xe82ce3d6bf40f2f9414c8d01a35e3d9eb16a1761',
-  TAP: '0x6896659267c3c9fd055d764327199a98e571e00d',
-  TOP: '0x2774031b3898fbe414f929b3223ce1039325e7dc',
-  MAKER_OTC: '0x06ef37a95603cb52e2dff4c2b177c84cdb3ce989',
-  PROXY_REGISTRY: '0x23f67a19dc232835eaeda2075728f8295f54dfca',
-  DS_PROXY: '0x570074ccb147ea3de2e23fb038d4d78324278886',
-  SAI_PROXY: '0x2348a875b1631307577be0935f289e0fb9316169',
-  OASIS_PROXY: '0xc72b03c37735cf122c27dc352e5f25f75beea389'
+  mainnet: {
+    GEM: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
+    GOV: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2', // MKR
+    PIP: '0x729D19f657BD0614b4985Cf1D82531c67569197B',
+    PEP: '0x99041F808D598B782D5a3e498681C2452A31da08',
+    PIT: '0x69076e44a9c70a67d5b79d95795aba299083c275',
+    ADM: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
+    SAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', // DAI
+    SIN: '0x79f6d0f646706e1261acf0b93dcb864f357d4680',
+    SKR: '0xf53ad2c6851052a81b42133467480961b2321c09', // PETH
+    DAD: '0x315cbb88168396d12e1a255f9cb935408fe80710',
+    MOM: '0xf2c5369cffb8ea6284452b0326e326dbfdcb867c',
+    VOX: '0x9b0f70df76165442ca6092939132bbaea77f2d7a',
+    TUB: '0x448a5065aebb8e423f0896e6c5d525c040f59af3',
+    TAP: '0xbda109309f9fafa6dd6a9cb9f1df4085b27ee8ef',
+    TOP: '0x9b0ccf7c8994e19f39b2b4cf708e0a7df65fa8a3'
+  },
+  mainlocal: {
+    GEM: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    GOV: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+    PIP: '0x729D19f657BD0614b4985Cf1D82531c67569197B',
+    PEP: '0x99041F808D598B782D5a3e498681C2452A31da08',
+    PIT: '0x69076e44a9c70a67d5b79d95795aba299083c275',
+    ADM: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
+    SAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+    SIN: '0x79f6d0f646706e1261acf0b93dcb864f357d4680',
+    SKR: '0xf53ad2c6851052a81b42133467480961b2321c09',
+    DAD: '0x315cbb88168396d12e1a255f9cb935408fe80710',
+    MOM: '0xf2c5369cffb8ea6284452b0326e326dbfdcb867c',
+    VOX: '0x9b0f70df76165442ca6092939132bbaea77f2d7a',
+    TUB: '0x448a5065aebb8e423f0896e6c5d525c040f59af3',
+    TAP: '0xbda109309f9fafa6dd6a9cb9f1df4085b27ee8ef',
+    TOP: '0x9b0ccf7c8994e19f39b2b4cf708e0a7df65fa8a3'
+  },
+  kovan: {
+    GEM: '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
+    GOV: '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd',
+    PIP: '0xa944bd4b25c9f186a846fd5668941aa3d3b8425f',
+    PEP: '0x02998f73fabb52282664094b0ff87741a1ce9030',
+    PIT: '0xbd747742b0f1f9791d3e6b85f8797a0cf4fbf10b',
+    ADM: '0x74d41fd874234d9bea31ff6b090ba1d0b9dc8785',
+    SAI: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2',
+    SIN: '0xdcdca4371befceafa069ca1e2afd8b925b69e57b',
+    SKR: '0xf4d791139ce033ad35db2b2201435fad668b1b64',
+    DAD: '0x6a884c7af48e29a20be9ff04bdde112b5596fcee',
+    MOM: '0x72ee9496b0867dfe5e8b280254da55e51e34d27b',
+    VOX: '0xbb4339c0ab5b1d9f14bd6e3426444a1e9d86a1d9',
+    TUB: '0xa71937147b55deb8a530c7229c442fd3f31b7db2',
+    TAP: '0xc936749d2d0139174ee0271bd28325074fdbc654',
+    TOP: '0x5f00393547561da3030ebf30e52f5dc0d5d3362c'
+  }
 };
 
 module.exports = {
@@ -47,7 +71,6 @@ module.exports = {
   // tenEthInWei,
   // oneHundredEthInWei,
   // oneThousandEthInWei,
-  uniswapFactoryAddresses,
-  daiTokenAddresses,
+  uniswapFactoryContracts,
   makerDaoContracts
 };

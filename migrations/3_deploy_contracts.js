@@ -1,14 +1,16 @@
 const EtherSwing = artifacts.require('ether_swing');
-const DaiToken = artifacts.require('erc20_token');
 const UniswapExchange = artifacts.require('uniswap_exchange');
 const UniswapFactory = artifacts.require('uniswap_factory');
+
+const DsToken = artifacts.require('DSToken');
+const SaiTub = artifacts.require('SaiTub');
+
 const constants = require('../utils/constants');
 
 module.exports = async (deployer, network) => {
   if (['develop', 'development', 'test'].includes(network)) {
     /*  
     Steps for dev environment:
-      - Deploy Dai token contract
       - Deploy UniswapExchange (exchange template) contract
       - Deploy UniswapFactory contract
       - Initialize UniswapFactory with UniswapExchange address
@@ -18,16 +20,10 @@ module.exports = async (deployer, network) => {
       - Deploy EtherSwing
     */
 
-    const name = 'Dai';
-    const symbol = 'DAI';
-    const decimals = 18;
-    const supply = 100000000;
-
     // Deploy Dai token contract
     // TODO update to use MakerDAO's Dai from previous deploy script
-    // TODO delete erc20_token.vy & artifact
-    await deployer.deploy(DaiToken, name, symbol, decimals, supply);
-    const daiTokenInstance = await DaiToken.at(DaiToken.address);
+    // await deployer.deploy(DaiToken, name, symbol, decimals, supply);
+    // const daiTokenInstance = await DaiToken.at(DaiToken.address);
 
     // Deploy UniswapExchange (exchange template) contract
     await deployer.deploy(UniswapExchange);
@@ -37,14 +33,17 @@ module.exports = async (deployer, network) => {
     const factoryInstance = await UniswapFactory.at(UniswapFactory.address);
     await factoryInstance.initializeFactory(UniswapExchange.address);
 
+    // Get Dai token from MakerDAO deploy script
+    const saiTub = await SaiTub.deployed();
+    const daiToken = await DsToken.at(await saiTub.sai());
     // Deploy UniswapExchange contract for Dai token
-    await factoryInstance.createExchange(DaiToken.address);
+    await factoryInstance.createExchange(daiToken.address);
 
     // Approve Dai UniswapExchange contract to transfer Dai
     const daiExchangeAddress = await factoryInstance.getExchange(
-      DaiToken.address
+      daiToken.address
     );
-    await daiTokenInstance.approve(daiExchangeAddress, 100000);
+    await daiToken.approve(daiExchangeAddress);
 
     // Add liquidity to Dai UniswapExchange (5 ETH, 10000 DAI)
     const daiExchangeInstance = await UniswapExchange.at(daiExchangeAddress);
@@ -58,7 +57,7 @@ module.exports = async (deployer, network) => {
     await deployer.deploy(
       EtherSwing,
       UniswapFactory.address,
-      DaiToken.address,
+      daiToken.address,
       {
         value: 10000000000000000000
       }
@@ -67,10 +66,12 @@ module.exports = async (deployer, network) => {
     ['mainnet', 'rinkeby', 'mainlocal', 'mainlocal-fork'].includes(network)
   ) {
     console.log(`Skipping Uniswap deploy for network: ${network}`);
+    // TODO update to use makerTub address
     deployer.deploy(
       EtherSwing,
-      constants.uniswapFactoryAddresses[network],
-      constants.daiTokenAddresses[network]
+      constants.uniswapFactoryContracts[network],
+      constants.makerDaoContracts[network].TUB,
+      constants.makerDaoContracts[network].SAI
     );
   } else {
     throw new Error(`Unexpected network in deploy script: ${network}`);

@@ -1,5 +1,7 @@
-const EtherSwing = artifacts.require('ether_swing');
 const DSToken = artifacts.require('DSToken');
+const SaiTub = artifacts.require('SaiTub');
+
+const EtherSwing = artifacts.require('ether_swing');
 const UniswapExchange = artifacts.require('uniswap_exchange');
 const UniswapFactory = artifacts.require('uniswap_factory');
 
@@ -11,6 +13,7 @@ const { expect } = require('chai');
 // Can we access 'network' like in migrations?
 contract('EtherSwing', accounts => {
   let daiToken;
+  let makerTub;
   let uniswapExchange;
   let uniswapFactory;
   let daiExchangeAddress;
@@ -28,22 +31,66 @@ contract('EtherSwing', accounts => {
   const thousandEthInWei = web3.utils.toWei('1000', 'ether');
 
   beforeEach(async () => {
-    daiToken = await DSToken.at('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359');
+    daiToken = await DSToken.at(constants.makerDaoContracts.mainnet.SAI);
     uniswapFactory = await UniswapFactory.at(
-      '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
+      constants.uniswapFactoryContracts.mainnet
+    );
+    makerTub = await SaiTub.at(constants.makerDaoContracts.mainnet.TUB);
+    etherSwing = await EtherSwing.new(
+      uniswapFactory.address,
+      makerTub.address,
+      daiToken.address,
+      {
+        value: oneEthInWei
+      }
     );
   });
 
-  describe.skip('DAI', async () => {
-    it('should have totalSupply()', async () => {
+  describe.skip('MakerDAO', async () => {
+    it('Tub should have access to Dai', async () => {
+      const daiAddress = await makerTub.sai();
+      expect(daiAddress.toLowerCase()).to.eq(
+        constants.makerDaoContracts.mainnet.SAI
+      );
+    });
+
+    it('Dai should have totalSupply()', async () => {
       expect(await daiToken.totalSupply()).to.be.bignumber.equal(
         '85562923587097955945310051'
       );
     });
-    it('should have symbol()', async () => {
+
+    it('Dai should have symbol()', async () => {
       const symbol = await daiToken.symbol();
       const decoded = web3.utils.hexToUtf8(symbol);
       expect(decoded).equal('DAI');
+    });
+  });
+
+  describe.skip('Uniswap', async () => {
+    it('should have a Dai exchange', async () => {
+      const daiExchangeAddress = await uniswapFactory.getExchange(
+        daiToken.address
+      );
+      const daiExchange = await UniswapExchange.at(daiExchangeAddress);
+      const daiAddress = await daiExchange.tokenAddress();
+      expect(daiAddress.toLowerCase()).to.eq(
+        constants.makerDaoContracts.mainnet.SAI
+      );
+    });
+  });
+
+  describe('EtherSwing', async () => {
+    it('should have access to daiExchange', async () => {
+      expect(await etherSwing.daiExchange()).to.eq(
+        '0x09cabEC1eAd1c0Ba254B09efb3EE13841712bE14'
+      );
+    });
+
+    it('should have access to makerTub', async () => {
+      expect(await etherSwing.makerTub()).to.eq(
+        '0x448a5065aeBB8E423F0896E6c5D525C040f59af3'
+      );
     });
   });
 });
