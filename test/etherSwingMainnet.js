@@ -12,7 +12,7 @@ const { expect } = require('chai');
 // TODO how to only execute when network is 'mainlocal'?
 // Can we access 'network' like in migrations?
 contract('EtherSwing', accounts => {
-  let daiToken;
+  let dai;
   let makerTub;
   let uniswapExchange;
   let uniswapFactory;
@@ -31,7 +31,7 @@ contract('EtherSwing', accounts => {
   const thousandEthInWei = web3.utils.toWei('1000', 'ether');
 
   beforeEach(async () => {
-    daiToken = await DSToken.at(constants.makerDaoContracts.mainnet.SAI);
+    dai = await DSToken.at(constants.makerDaoContracts.mainnet.SAI);
     uniswapFactory = await UniswapFactory.at(
       constants.uniswapFactoryContracts.mainnet
     );
@@ -39,7 +39,7 @@ contract('EtherSwing', accounts => {
     etherSwing = await EtherSwing.new(
       uniswapFactory.address,
       makerTub.address,
-      daiToken.address,
+      // dai.address,
       {
         value: oneEthInWei
       }
@@ -55,13 +55,13 @@ contract('EtherSwing', accounts => {
     });
 
     it('Dai should have totalSupply()', async () => {
-      expect(await daiToken.totalSupply()).to.be.bignumber.equal(
+      expect(await dai.totalSupply()).to.be.bignumber.equal(
         '85562923587097955945310051'
       );
     });
 
     it('Dai should have symbol()', async () => {
-      const symbol = await daiToken.symbol();
+      const symbol = await dai.symbol();
       const decoded = web3.utils.hexToUtf8(symbol);
       expect(decoded).equal('DAI');
     });
@@ -69,9 +69,7 @@ contract('EtherSwing', accounts => {
 
   describe.skip('Uniswap', async () => {
     it('should have a Dai exchange', async () => {
-      const daiExchangeAddress = await uniswapFactory.getExchange(
-        daiToken.address
-      );
+      const daiExchangeAddress = await uniswapFactory.getExchange(dai.address);
       const daiExchange = await UniswapExchange.at(daiExchangeAddress);
       const daiAddress = await daiExchange.tokenAddress();
       expect(daiAddress.toLowerCase()).to.eq(
@@ -87,10 +85,24 @@ contract('EtherSwing', accounts => {
       );
     });
 
+    it('should have access to mkrExchange', async () => {
+      expect(await etherSwing.mkrExchange()).to.eq(
+        '0x09cabEC1eAd1c0Ba254B09efb3EE13841712bE14'
+      );
+    });
+
     it('should have access to makerTub', async () => {
       expect(await etherSwing.makerTub()).to.eq(
         '0x448a5065aeBB8E423F0896E6c5D525C040f59af3'
       );
+    });
+
+    xit('openPosition()', async () => {
+      // TODO
+    });
+
+    xit('closePosition()', async () => {
+      // TODO
     });
   });
 });

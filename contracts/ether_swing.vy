@@ -2,7 +2,7 @@ from vyper.interfaces import ERC20
 
 struct CDP:
   owner: address
-  lockedEth: uint256(wei)
+  lockedPeth: uint256
 
 # Interfaces
 
@@ -57,13 +57,36 @@ contract UniswapExchange():
     # Setup
     def setup(token_addr: address): modifying
 
+# MakerDAO's SaiTub
 contract MakerTub():
-  def wipe(cup: bytes32, wad: uint256): modifying
   def gov() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
   def sai() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def tab(cup: bytes32) -> uint256: modifying
-  def rap(cup: bytes32) -> uint256: modifying
   def pep() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def pip() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def skr() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def gem() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def per() -> uint256: constant
+  def open() -> bytes32: modifying
+  def join(wad: uint256): modifying
+  def exit(wad: uint256): modifying
+  def tab(cupId: bytes32) -> uint256: modifying
+  def rap(cupId: bytes32) -> uint256: modifying
+  def wipe(cupId: bytes32, wad: uint256): modifying
+  def give(cupId: bytes32, guy: address): modifying
+  def lock(cupId: bytes32, wad: uint256): modifying
+  def free(cupId: bytes32, wad: uint256): modifying
+  def draw(cupId: bytes32, wad: uint256): modifying
+
+# Can't use ERC20 since WETH extends w/ deposit() & withdraw()
+contract WETH():
+  def balanceOf(owner: address) -> uint256: constant
+  def approve(spender: address, amount: uint256) -> bool: modifying
+  def deposit(): modifying
+  def withdraw(amount: uint256): modifying
+
+# to read pip, reference price feed
+contract DSValue():
+  def read() -> bytes32: constant
 
 # Events
 
@@ -75,38 +98,48 @@ Payment: event({_amount: uint256(wei), _from: indexed(address)})
 owner: address
 userToCDP: map(address, CDP)
 
-daiToken: ERC20
-uniswapFactory: public(UniswapFactory) # TODO no need to be public
+dai: ERC20
+mkr: ERC20
+weth: WETH
+peth: ERC20
+# TODO remove public from these once tested:
+uniswapFactory: public(UniswapFactory) 
 daiExchange: public(UniswapExchange)
 makerTub: public(MakerTub)
+mkrExchange: public(UniswapExchange)
+# TODO worth assigning storage to exchanges & tokens?
+# ... can access them all indirectly via Factory & Tub functions. prob cheaper.
 
 # Constructor
-# TODO pass in MakerTub address. will need interface
-# w/ MakerTub interface, can get dai address & weth address
 @public
 @payable
-def __init__(uniswap_factory_address: address, mkr_tub_address: address, dai_token_address: address):
-  assert uniswap_factory_address != ZERO_ADDRESS
-  assert mkr_tub_address != ZERO_ADDRESS
+def __init__(factory: address, tub: address):
+  assert factory != ZERO_ADDRESS
+  assert tub != ZERO_ADDRESS
   self.owner = msg.sender
 
-  # Get Dai address
-  self.makerTub = MakerTub(mkr_tub_address)
-  # TODO doesn't work :( 
-    # b/c SaiTub.sai() refers to an interface?? Even though it returns an address?
-    # daiTokenAddress: address = self.makerTub.sai()
-  # TODO approve MakerTub to transfer Dai & MKR
+  self.makerTub = MakerTub(tub)
+  self.dai = ERC20(self.makerTub.sai())
+  self.mkr = ERC20(self.makerTub.gov())
+  self.weth = WETH(self.makerTub.gem())
+  self.peth = ERC20(self.makerTub.skr()) # TODO needed?
 
-  # Get Dai exchange
-  self.uniswapFactory = UniswapFactory(uniswap_factory_address)
-  # TODO change mkr_tub_address to daiTokenAddress
-  daiExchangeAddress: address = self.uniswapFactory.getExchange(dai_token_address)
+  # Approve MakerDAO to transfer Dai, MKR, PETH, WETH 
+  self.dai.approve(self.makerTub, MAX_UINT256)
+  self.mkr.approve(self.makerTub, MAX_UINT256)
+  self.weth.approve(self.makerTub, MAX_UINT256)
+  self.peth.approve(self.makerTub, MAX_UINT256)
+
+  # Get Uniswap exchanges & approve token transfers
+  self.uniswapFactory = UniswapFactory(factory)
+
+  daiExchangeAddress: address = self.uniswapFactory.getExchange(self.makerTub.sai())
   self.daiExchange = UniswapExchange(daiExchangeAddress)
+  self.dai.approve(daiExchangeAddress, MAX_UINT256)
 
-  # # Approve Dai exchange to transfer funds
-  self.daiToken = ERC20(dai_token_address)
-  self.daiToken.approve(daiExchangeAddress, MAX_UINT256)
-
+  mkrExchangeAddress: address = self.uniswapFactory.getExchange(self.makerTub.gov())
+  self.mkrExchange = UniswapExchange(mkrExchangeAddress)
+  self.mkr.approve(mkrExchangeAddress, MAX_UINT256)
 
 # Need default function to receive ETH from Dai exchange
 # https://vyper.readthedocs.io/en/v0.1.0-beta.10/structure-of-a-contract.html#default-function
@@ -128,36 +161,11 @@ def transfer(recipient: address, amount: uint256(wei)):
   assert self.balance >= amount, "Insufficient contract balance."
   send(recipient, amount)
 
-# Open leveraged ETH position
-@public
-@payable
-def openPosition(leverage: uint256):
-  assert msg.value > 0, "Must send value to call this function."
-  assert leverage < 3, "Leverage multiplier must be below 3." # TODO how to support decimals? 2.5x
-  ethLoan: uint256(wei) = msg.value * leverage
-  assert self.balance >= ethLoan, "Insufficient contract balance. Please use a smaller amount or try again later."
-  totalEth: uint256(wei) = msg.value + ethLoan
-
-  # check if msg.sender already has an open CDP
-  # if they do...
-    # add totalEth to existing CDP
-  # else...
-    # open CDP w/ totalEth
-  self.userToCDP[msg.sender] = CDP({owner: msg.sender, lockedEth: totalEth})
-
-# Close leveraged ETH position & return funds to user
-# @public
-# def closePosition():
-  # assert user has an open position
-  # use treasury balance to exchange ETH for Dai on Uniswap
-  # close CDP by sending Dai
-  # transfer all funds (minus ethLoan & fees) to msg.sender
-
 # TODO set private once tested
 # Exchange DAI for ETH on Uniswap, returns value of ETH received
 @public
 def exchangeDaiForEth(dai_to_sell: uint256) -> uint256(wei):
-  dai_balance: uint256 = self.daiToken.balanceOf(self)
+  dai_balance: uint256 = self.dai.balanceOf(self)
   assert dai_balance > dai_to_sell, "Insufficient contract balance to sell DAI."
   min_eth_to_buy: uint256(wei) = 1
   deadline: timestamp = block.timestamp + 300
@@ -174,7 +182,49 @@ def exchangeEthForDai(wei_to_sell: uint256(wei)) -> uint256:
   deadline: timestamp = block.timestamp + 300
   dai_received: uint256 = self.daiExchange.ethToTokenSwapInput(min_tokens_to_buy, deadline, value=wei_to_sell)
   return dai_received
-  # TODO send amount_received to user's CDP
+  # TODO send amount_received to user's CDP  
+
+# Open leveraged ETH position
+@public
+@payable
+def openPosition(leverage: decimal):
+  assert msg.value > 0, "Must send value to call this function."
+  assert leverage < 3.0, "Leverage multiplier must be below 3."
+  userDeposit: decimal = convert(as_unitless_number(msg.value), decimal)
+  weiLoan: decimal =  userDeposit * leverage
+  contractBalance: decimal = convert(as_unitless_number(self.balance), decimal)
+  assert contractBalance >= weiLoan, "Insufficient contract balance. Please use a smaller amount or try again later."
+  totalWeiDeposit: decimal = userDeposit + weiLoan
+  
+  # https://github.com/makerdao/developerguides/blob/master/devtools/working-with-dsproxy/working-with-dsproxy.md#opening-a-cdp
+  # TODO check out SaiProxy lockAndDraw & confirm steps are correct
+
+  # convert ETH to WETH
+  self.weth.deposit(value=totalWeiDeposit) # TODO works? no need to convert to uint256(wei)?
+
+  # TODO check if msg.sender has an existing CDP, if so, add totalWeiDeposit to existing CDP?
+  # open CDP
+  cupId: bytes32 = self.makerTub.open()
+  # convert WETH to PETH
+  pethAmount: decimal = totalWeiDeposit / convert(self.makerTub.per(), decimal) # TODO fix. how to calculate?
+  self.makerTub.join(convert(pethAmount, uint256))
+  # Lock PETH in CDP
+  self.makerTub.lock(cupId, convert(pethAmount, uint256))
+  self.userToCDP[msg.sender] = CDP({owner: msg.sender, lockedPeth: convert(pethAmount, uint256)})
+  # draw Dai
+  daiToDraw: decimal = weiLoan * convert(DSValue(self.makerTub.pip()).read(), decimal) # TODO fix. how to calculate?
+  self.exchangeDaiForEth(convert(daiToDraw, uint256))
+  # TODO add platform fee
+
+# Close leveraged ETH position & return funds to user
+# @public
+# def closePosition():
+  # assert user has an open position
+  # use treasury balance to exchange ETH for Dai on Uniswap
+  # pay stability fees w/ Dai: 
+  # https://github.com/makerdao/developerguides/blob/master/devtools/working-with-dsproxy/working-with-dsproxy.md#pay-stability-fees-with-dai
+  # close CDP by sending Dai
+  # transfer all funds (minus ethLoan & fees) to msg.sender
 
 @public
 @constant
@@ -183,5 +233,5 @@ def getContractBalance() -> uint256(wei):
 
 @public
 @constant
-def getLockedEthBalance() -> uint256(wei):
-  return self.userToCDP[msg.sender].lockedEth
+def getLockedEthBalance() -> uint256:
+  return self.userToCDP[msg.sender].lockedPeth

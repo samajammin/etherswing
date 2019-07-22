@@ -23,7 +23,7 @@ module.exports = async (deployer, network) => {
     // Deploy Dai token contract
     // TODO update to use MakerDAO's Dai from previous deploy script
     // await deployer.deploy(DaiToken, name, symbol, decimals, supply);
-    // const daiTokenInstance = await DaiToken.at(DaiToken.address);
+    // const daiInstance = await DaiToken.at(DaiToken.address);
 
     // Deploy UniswapExchange (exchange template) contract
     await deployer.deploy(UniswapExchange);
@@ -35,15 +35,13 @@ module.exports = async (deployer, network) => {
 
     // Get Dai token from MakerDAO deploy script
     const saiTub = await SaiTub.deployed();
-    const daiToken = await DsToken.at(await saiTub.sai());
+    const dai = await DsToken.at(await saiTub.sai());
     // Deploy UniswapExchange contract for Dai token
-    await factoryInstance.createExchange(daiToken.address);
+    await factoryInstance.createExchange(dai.address);
 
     // Approve Dai UniswapExchange contract to transfer Dai
-    const daiExchangeAddress = await factoryInstance.getExchange(
-      daiToken.address
-    );
-    await daiToken.approve(daiExchangeAddress);
+    const daiExchangeAddress = await factoryInstance.getExchange(dai.address);
+    await dai.approve(daiExchangeAddress);
 
     // Add liquidity to Dai UniswapExchange (5 ETH, 10000 DAI)
     const daiExchangeInstance = await UniswapExchange.at(daiExchangeAddress);
@@ -54,14 +52,9 @@ module.exports = async (deployer, network) => {
       value: 5000000000000000000
     });
     // Deploy EtherSwing
-    await deployer.deploy(
-      EtherSwing,
-      UniswapFactory.address,
-      daiToken.address,
-      {
-        value: 10000000000000000000
-      }
-    );
+    await deployer.deploy(EtherSwing, UniswapFactory.address, {
+      value: 10000000000000000000
+    });
   } else if (
     ['mainnet', 'rinkeby', 'mainlocal', 'mainlocal-fork'].includes(network)
   ) {
@@ -70,8 +63,8 @@ module.exports = async (deployer, network) => {
     deployer.deploy(
       EtherSwing,
       constants.uniswapFactoryContracts[network],
-      constants.makerDaoContracts[network].TUB,
-      constants.makerDaoContracts[network].SAI
+      constants.makerDaoContracts[network].TUB
+      // constants.makerDaoContracts[network].SAI
     );
   } else {
     throw new Error(`Unexpected network in deploy script: ${network}`);

@@ -17,7 +17,7 @@ const { expectRevert } = require('openzeppelin-test-helpers');
 const { expect } = require('chai');
 
 contract('EtherSwing', accounts => {
-  let daiToken;
+  let dai;
   let uniswapExchange;
   let uniswapFactory;
   let daiExchangeAddress;
@@ -42,17 +42,17 @@ contract('EtherSwing', accounts => {
     const symbol = 'DAI';
     const decimals = 18;
     const supply = 100000000;
-    daiToken = await Token.new(name, symbol, decimals, supply);
+    dai = await Token.new(name, symbol, decimals, supply);
 
     // Deploy Uniswap Dai exchange
     uniswapExchange = await UniswapExchange.new();
     uniswapFactory = await UniswapFactory.new();
     await uniswapFactory.initializeFactory(uniswapExchange.address);
-    await uniswapFactory.createExchange(daiToken.address);
+    await uniswapFactory.createExchange(dai.address);
 
     // Add liquidity
-    daiExchangeAddress = await uniswapFactory.getExchange(daiToken.address);
-    daiToken.approve(daiExchangeAddress, Number.MAX_SAFE_INTEGER);
+    daiExchangeAddress = await uniswapFactory.getExchange(dai.address);
+    dai.approve(daiExchangeAddress, Number.MAX_SAFE_INTEGER);
     daiExchange = await UniswapExchange.at(daiExchangeAddress);
     const minLiquidity = 0;
     const maxTokens = 10000;
@@ -64,13 +64,9 @@ contract('EtherSwing', accounts => {
 
     // Deploy EtherSwing
     // TODO update to use makerTub address
-    etherSwing = await EtherSwing.new(
-      uniswapFactory.address,
-      daiToken.address,
-      {
-        value: oneEthInWei
-      }
-    );
+    etherSwing = await EtherSwing.new(uniswapFactory.address, dai.address, {
+      value: oneEthInWei
+    });
   });
 
   describe.skip('initial state', async () => {
@@ -81,7 +77,7 @@ contract('EtherSwing', accounts => {
     });
 
     xit('should have a dai token address', async () => {
-      expect(await etherSwing.daiTokenAddress()).to.have.lengthOf(42);
+      expect(await etherSwing.daiAddress()).to.have.lengthOf(42);
     });
 
     xit('should have a uniswap factory address', async () => {
@@ -164,13 +160,13 @@ contract('EtherSwing', accounts => {
     });
 
     it('exchangeDaiForEth()', async () => {
-      let daiOwned = await daiToken.balanceOf(owner);
+      let daiOwned = await dai.balanceOf(owner);
       expect(daiOwned).to.be.bignumber.equal('99999999999999999999990000');
 
       // TODO remove once contract can withdraw Dai from MakerDAO
-      await daiToken.transfer(etherSwing.address, 10000000, { from: owner });
+      await dai.transfer(etherSwing.address, 10000000, { from: owner });
 
-      const daiInContract = await daiToken.balanceOf(etherSwing.address);
+      const daiInContract = await dai.balanceOf(etherSwing.address);
       expect(daiInContract).to.be.bignumber.equal('10000000');
 
       const ethBought = await etherSwing.exchangeDaiForEth(100, {
@@ -178,7 +174,7 @@ contract('EtherSwing', accounts => {
       });
       expect(ethBought).to.equal(10);
 
-      daiOwned = await daiToken.balanceOf(owner);
+      daiOwned = await dai.balanceOf(owner);
       expect(daiOwned).to.be.bignumber.equal('99999999999999999998990000');
     });
   });
