@@ -27,9 +27,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.23;\n\nimport \"./SaiProxy.sol\";\n\ncontract ProxyRegistryInterface {\n    function build(address) public returns (address);\n}\n\ncontract SaiProxyCreateAndExecute is SaiProxy {\n\n    // Create a DSProxy instance and open a cup\n    function createAndOpen(address registry_, address tub_) public returns (address proxy, bytes32 cup) {\n        proxy = ProxyRegistryInterface(registry_).build(msg.sender);\n        cup = open(tub_);\n        TubInterface(tub_).give(cup, proxy);\n    }\n\n    // Create a DSProxy instance, open a cup, and lock collateral\n    function createOpenAndLock(address registry_, address tub_) public payable returns (address proxy, bytes32 cup) {\n        proxy = ProxyRegistryInterface(registry_).build(msg.sender);\n        cup = open(tub_);\n        lock(tub_, cup);\n        TubInterface(tub_).give(cup, proxy);\n    }\n\n    // Create a DSProxy instance, open a cup, lock collateral, and draw DAI\n    function createOpenLockAndDraw(address registry_, address tub_, uint wad) public payable returns (address proxy, bytes32 cup) {\n        proxy = ProxyRegistryInterface(registry_).build(msg.sender);\n        cup = open(tub_);\n        lockAndDraw(tub_, cup, wad);\n        TubInterface(tub_).give(cup, proxy);\n    }\n}\n",
-  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxyCreateAndExecute.sol",
+  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxyCreateAndExecute.sol",
   "ast": {
-    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxyCreateAndExecute.sol",
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxyCreateAndExecute.sol",
     "exportedSymbols": {
       "ProxyRegistryInterface": [
         1049
@@ -53,7 +53,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxy.sol",
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxy.sol",
         "file": "./SaiProxy.sol",
         "id": 1041,
         "nodeType": "ImportDirective",
@@ -1884,7 +1884,7 @@
     "src": "0:1242:2"
   },
   "legacyAST": {
-    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxyCreateAndExecute.sol",
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxyCreateAndExecute.sol",
     "exportedSymbols": {
       "ProxyRegistryInterface": [
         1049
@@ -1908,7 +1908,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxy.sol",
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxy.sol",
         "file": "./SaiProxy.sol",
         "id": 1041,
         "nodeType": "ImportDirective",
@@ -3744,7 +3744,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.10",
-  "updatedAt": "2019-07-16T04:26:45.035Z",
+  "updatedAt": "2019-08-22T14:53:45.485Z",
   "devdoc": {
     "methods": {}
   },

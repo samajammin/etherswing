@@ -26,9 +26,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.23;\n\nimport \"./ds-math/math.sol\";\n\ncontract TubInterface {\n    function open() public returns (bytes32);\n    function join(uint) public;\n    function exit(uint) public;\n    function lock(bytes32, uint) public;\n    function free(bytes32, uint) public;\n    function draw(bytes32, uint) public;\n    function wipe(bytes32, uint) public;\n    function give(bytes32, address) public;\n    function shut(bytes32) public;\n    function cups(bytes32) public view returns (address, uint, uint, uint);\n    function gem() public view returns (TokenInterface);\n    function gov() public view returns (TokenInterface);\n    function skr() public view returns (TokenInterface);\n    function sai() public view returns (TokenInterface);\n    function mat() public view returns (uint);\n    function ink(bytes32) public view returns (uint);\n    function tab(bytes32) public view returns (uint);\n    function rap(bytes32) public view returns (uint);\n    function per() public view returns (uint);\n    function pep() public view returns (PepInterface);\n\n    function ask(uint) public view returns (uint);\n    function cap() public view returns (uint);\n}\n\ncontract TokenInterface {\n    function allowance(address, address) public view returns (uint);\n    function balanceOf(address) public view returns (uint);\n    function approve(address, uint) public;\n    function transfer(address, uint) public returns (bool);\n    function transferFrom(address, address, uint) public returns (bool);\n    function deposit() public payable;\n    function withdraw(uint) public;\n\n    function totalSupply() public returns (uint);\n}\n\ncontract PepInterface {\n    function peek() public returns (bytes32, bool);\n}\n\ncontract OtcInterface {\n    function getPayAmount(address, address, uint) public view returns (uint);\n    function buyAllAmount(address, uint, address pay_gem, uint) public returns (uint);\n}\n\ncontract SaiProxy is DSMath {\n    function open(address tub_) public returns (bytes32) {\n        return TubInterface(tub_).open();\n    }\n\n    function give(address tub_, bytes32 cup, address lad) public {\n        TubInterface(tub_).give(cup, lad);\n    }\n\n    function lock(address tub_, bytes32 cup) public payable {\n        if (msg.value > 0) {\n            TubInterface tub = TubInterface(tub_);\n\n            (address lad,,,) = tub.cups(cup);\n            require(lad == address(this), \"cup-not-owned\");\n\n            tub.gem().deposit.value(msg.value)();\n\n            uint ink = rdiv(msg.value, tub.per());\n            ink = rmul(ink, tub.per()) <= msg.value ? ink : ink - 1;\n\n            if (tub.gem().allowance(this, tub) != uint(-1)) {\n                tub.gem().approve(tub, uint(-1));\n            }\n            tub.join(ink);\n\n            if (tub.skr().allowance(this, tub) != uint(-1)) {\n                tub.skr().approve(tub, uint(-1));\n            }\n            tub.lock(cup, ink);\n        }\n    }\n\n    function draw(address tub_, bytes32 cup, uint wad) public {\n        if (wad > 0) {\n            TubInterface tub = TubInterface(tub_);\n            tub.draw(cup, wad);\n            tub.sai().transfer(msg.sender, wad);\n        }\n    }\n\n    function handleGovFee(TubInterface tub, uint saiDebtFee, address otc_) internal {\n        bytes32 val;\n        bool ok;\n        (val, ok) = tub.pep().peek();\n        if (ok && val != 0) {\n            uint govAmt = wdiv(saiDebtFee, uint(val));\n            if (otc_ != address(0)) {\n                uint saiGovAmt = OtcInterface(otc_).getPayAmount(tub.sai(), tub.gov(), govAmt);\n                if (tub.sai().allowance(this, otc_) != uint(-1)) {\n                    tub.sai().approve(otc_, uint(-1));\n                }\n                tub.sai().transferFrom(msg.sender, this, saiGovAmt);\n                OtcInterface(otc_).buyAllAmount(tub.gov(), govAmt, tub.sai(), saiGovAmt);\n            } else {\n                tub.gov().transferFrom(msg.sender, this, govAmt);\n            }\n        }\n    }\n\n    function wipe(address tub_, bytes32 cup, uint wad, address otc_) public {\n        if (wad > 0) {\n            TubInterface tub = TubInterface(tub_);\n\n            tub.sai().transferFrom(msg.sender, this, wad);\n            handleGovFee(tub, rmul(wad, rdiv(tub.rap(cup), tub.tab(cup))), otc_);\n\n            if (tub.sai().allowance(this, tub) != uint(-1)) {\n                tub.sai().approve(tub, uint(-1));\n            }\n            if (tub.gov().allowance(this, tub) != uint(-1)) {\n                tub.gov().approve(tub, uint(-1));\n            }\n            tub.wipe(cup, wad);\n        }\n    }\n\n    function wipe(address tub_, bytes32 cup, uint wad) public {\n        wipe(tub_, cup, wad, address(0));\n    }\n\n    function free(address tub_, bytes32 cup, uint jam) public {\n        if (jam > 0) {\n            TubInterface tub = TubInterface(tub_);\n            uint ink = rdiv(jam, tub.per());\n            ink = rmul(ink, tub.per()) <= jam ? ink : ink - 1;\n            tub.free(cup, ink);\n            if (tub.skr().allowance(this, tub) != uint(-1)) {\n                tub.skr().approve(tub, uint(-1));\n            }\n            tub.exit(ink);\n            uint freeJam = tub.gem().balanceOf(this); // Withdraw possible previous stuck WETH as well\n            tub.gem().withdraw(freeJam);\n            address(msg.sender).transfer(freeJam);\n        }\n    }\n\n    function lockAndDraw(address tub_, bytes32 cup, uint wad) public payable {\n        lock(tub_, cup);\n        draw(tub_, cup, wad);\n    }\n\n    function lockAndDraw(address tub_, uint wad) public payable returns (bytes32 cup) {\n        cup = open(tub_);\n        lockAndDraw(tub_, cup, wad);\n    }\n\n    function wipeAndFree(address tub_, bytes32 cup, uint jam, uint wad) public payable {\n        wipe(tub_, cup, wad);\n        free(tub_, cup, jam);\n    }\n\n    function wipeAndFree(address tub_, bytes32 cup, uint jam, uint wad, address otc_) public payable {\n        wipe(tub_, cup, wad, otc_);\n        free(tub_, cup, jam);\n    }\n\n    function shut(address tub_, bytes32 cup) public {\n        TubInterface tub = TubInterface(tub_);\n        wipeAndFree(tub_, cup, rmul(tub.ink(cup), tub.per()), tub.tab(cup));\n        tub.shut(cup);\n    }\n\n    function shut(address tub_, bytes32 cup, address otc_) public {\n        TubInterface tub = TubInterface(tub_);\n        wipeAndFree(tub_, cup, rmul(tub.ink(cup), tub.per()), tub.tab(cup), otc_);\n        tub.shut(cup);\n    }\n}\n",
-  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxy.sol",
+  "sourcePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxy.sol",
   "ast": {
-    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxy.sol",
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxy.sol",
     "exportedSymbols": {
       "OtcInterface": [
         286
@@ -61,7 +61,7 @@
         "src": "0:24:1"
       },
       {
-        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/ds-math/math.sol",
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/ds-math/math.sol",
         "file": "./ds-math/math.sol",
         "id": 59,
         "nodeType": "ImportDirective",
@@ -13378,7 +13378,7 @@
     "src": "0:6342:1"
   },
   "legacyAST": {
-    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/SaiProxy.sol",
+    "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/SaiProxy.sol",
     "exportedSymbols": {
       "OtcInterface": [
         286
@@ -13411,7 +13411,7 @@
         "src": "0:24:1"
       },
       {
-        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/proxy/ds-math/math.sol",
+        "absolutePath": "/Users/samrichards/code/tu/etherswing/contracts/development/makerdao/sai-proxy/ds-math/math.sol",
         "file": "./ds-math/math.sol",
         "id": 59,
         "nodeType": "ImportDirective",
@@ -26733,7 +26733,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.10",
-  "updatedAt": "2019-07-16T04:26:44.983Z",
+  "updatedAt": "2019-08-22T14:53:45.434Z",
   "devdoc": {
     "methods": {}
   },
