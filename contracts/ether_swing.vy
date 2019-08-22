@@ -59,12 +59,12 @@ contract UniswapExchange():
 
 # MakerDAO's SaiTub
 contract MakerTub():
-  def gov() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def sai() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def pep() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def pip() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def skr() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
-  def gem() -> address: constant # TODO since this seems to break, pass addresses into ether_swing constructor
+  def gov() -> address: constant
+  def sai() -> address: constant
+  def pep() -> address: constant
+  def pip() -> address: constant
+  def skr() -> address: constant
+  def gem() -> address: constant
   def per() -> uint256: constant
   def open() -> bytes32: modifying
   def join(wad: uint256): modifying
@@ -98,17 +98,18 @@ Payment: event({_amount: uint256(wei), _from: indexed(address)})
 owner: address
 userToCDP: map(address, CDP)
 
+# these get saved as addresses in storage
 dai: ERC20
 mkr: ERC20
 weth: WETH
 peth: ERC20
+
 # TODO remove public from these once tested:
 uniswapFactory: public(UniswapFactory) 
 daiExchange: public(UniswapExchange)
 makerTub: public(MakerTub)
 mkrExchange: public(UniswapExchange)
-# TODO worth assigning storage to exchanges & tokens?
-# ... can access them all indirectly via Factory & Tub functions. prob cheaper.
+# TODO worth assigning storage to exchanges & tokens? can access them all indirectly via Factory & Tub functions. prob cheaper.
 
 # Constructor
 @public

@@ -46,7 +46,7 @@ contract('EtherSwing', accounts => {
     );
   });
 
-  describe.skip('MakerDAO', async () => {
+  describe('MakerDAO', async () => {
     it('Tub should have access to Dai', async () => {
       const daiAddress = await makerTub.sai();
       expect(daiAddress.toLowerCase()).to.eq(
@@ -67,7 +67,7 @@ contract('EtherSwing', accounts => {
     });
   });
 
-  describe.skip('Uniswap', async () => {
+  describe('Uniswap', async () => {
     it('should have a Dai exchange', async () => {
       const daiExchangeAddress = await uniswapFactory.getExchange(dai.address);
       const daiExchange = await UniswapExchange.at(daiExchangeAddress);
@@ -87,7 +87,7 @@ contract('EtherSwing', accounts => {
 
     it('should have access to mkrExchange', async () => {
       expect(await etherSwing.mkrExchange()).to.eq(
-        '0x09cabEC1eAd1c0Ba254B09efb3EE13841712bE14'
+        '0x2C4Bd064b998838076fa341A83d007FC2FA50957'
       );
     });
 

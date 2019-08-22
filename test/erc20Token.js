@@ -16,7 +16,7 @@ contract('DaiToken', accounts => {
     });
   });
 
-  describe.skip('initial state', async () => {
+  describe('initial state', async () => {
     it('should have values.', async () => {
       expect(await dai.name()).equal(name);
       expect(await dai.symbol()).equal(symbol);

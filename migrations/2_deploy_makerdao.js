@@ -1,5 +1,13 @@
 const BN = require('bn.js');
 
+// EtherSwing
+const EtherSwing = artifacts.require('ether_swing');
+
+// Uniswap
+const UniswapExchange = artifacts.require('uniswap_exchange');
+const UniswapFactory = artifacts.require('uniswap_factory');
+
+// MakerDao
 const Proxy = artifacts.require('DSProxy');
 const ProxyFactory = artifacts.require('DSProxyFactory');
 const ProxyRegistry = artifacts.require('ProxyRegistry');
@@ -74,6 +82,7 @@ const getCupdIdsForLad = async (tub, lad) => {
 };
 
 module.exports = async (deployer, network, accounts) => {
+  console.log({ network });
   if (['develop', 'development', 'test'].includes(network)) {
     const cdpOwner = accounts[0];
 
@@ -172,6 +181,38 @@ module.exports = async (deployer, network, accounts) => {
     await gov.approve(proxy.address, thousandEthInWei);
     await sai.approve(proxy.address, thousandEthInWei);
     console.log('MKR balance after mint: ' + (await gov.balanceOf(cdpOwner)));
+
+    // Deploy UniswapExchange (exchange template) contract
+    await deployer.deploy(UniswapExchange);
+
+    // Deploy & initialize UniswapFactory contract
+    await deployer.deploy(UniswapFactory);
+    const factoryInstance = await UniswapFactory.at(UniswapFactory.address);
+    await factoryInstance.initializeFactory(UniswapExchange.address);
+
+    // Get Dai token from MakerDAO deploy script
+    // const saiTub = await SaiTub.deployed();
+    const dai = await DsToken.at(await tub.sai());
+
+    // Deploy UniswapExchange contract for Dai token
+    await factoryInstance.createExchange(dai.address);
+
+    // Approve Dai UniswapExchange contract to transfer Dai
+    const daiExchangeAddress = await factoryInstance.getExchange(dai.address);
+    await dai.approve(daiExchangeAddress);
+
+    // Add liquidity to Dai UniswapExchange (5 ETH, 10000 DAI)
+    const daiExchangeInstance = await UniswapExchange.at(daiExchangeAddress);
+    const minLiquidity = 0;
+    const maxTokens = 10000;
+    const deadline = Math.floor(Date.now() / 1000) + 300;
+    await daiExchangeInstance.addLiquidity(minLiquidity, maxTokens, deadline, {
+      value: 5000000000000000000
+    });
+    // Deploy EtherSwing
+    await deployer.deploy(EtherSwing, UniswapFactory.address, tub.address, {
+      value: 10000000000000000000
+    });
 
     // Close CDP
     // console.log(
